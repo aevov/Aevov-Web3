@@ -87,8 +87,8 @@ The following roadmap outlines the key areas for future development to bring the
 **Phase 4: The Proprietary Language**
 
 *   **Integration with Aevov Language:**
-    *   **Status:** Conceptual phase.
-    *   **Next Steps:** Develop the proprietary Aevov programming language and integrate it with the BLOOM engine. This will be the primary monetization vehicle and will provide unparalleled capabilities for AI infrastructure development.
+    *   **Status:** Web4 and Web5 integration. 
+    *   **Next Steps:** Integrate Aevov programming language  with the BLOOM engine. This will be the primary monetization vehicle and will provide unparalleled capabilities for AI infrastructure development.
 
 ### 5. How to Contribute
 
@@ -96,4 +96,4 @@ We welcome contributions from the community. Please refer to the `README.md` for
 
 ### 6. Known Issues
 
-*   **Testing Environment:** The unit tests are not currently running due to issues with the testing environment. This is a high-priority issue that needs to be resolved.
+*   **Testing Environment:** Not enough tests in a real environment. 
