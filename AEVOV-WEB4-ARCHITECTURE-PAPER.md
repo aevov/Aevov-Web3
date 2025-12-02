@@ -88,7 +88,7 @@ This paper outlines the architectural changes required for this transition.
 $this->token_rate = 100.0;  // tokens per MB relayed
 ```
 
-**Status**: Token accounting exists but no blockchain, no wallets, no consensus.
+**Status**: Token accounting exists but no waterchain, no wallets, no consensus.
 
 ---
 
@@ -118,7 +118,7 @@ $this->token_rate = 100.0;  // tokens per MB relayed
 │         ▼                    ▼                    ▼            │
 │  ┌─────────────┐     ┌─────────────┐     ┌─────────────┐      │
 │  │  AevStore   │     │   AevCoin   │     │   AI Core   │      │
-│  │   Native    │◄───►│  Blockchain │◄───►│  Federated  │      │
+│  │   Native    │◄───►│  waterchain │◄───►│  Federated  │      │
 │  │   Storage   │     │   + Wallet  │     │   Learning  │      │
 │  └─────────────┘     └─────────────┘     └─────────────┘      │
 │         │                    │                    │            │
@@ -631,7 +631,7 @@ Message Types:
   0x08 - UNPIN_REQUEST
 ```
 
-### 8.2 AevCoin Blockchain
+### 8.2 AevCoin waterchain
 
 ```
 Block Structure:
@@ -718,7 +718,7 @@ add_filter('aevov_aevcoin_balance', function($address) {
 └── Migration tooling
 
 2025 Q3 - AevCoin Testnet
-├── Blockchain implementation
+├── waterchain implementation
 ├── Wallet integration
 ├── Proof-of-Contribution consensus
 └── Testnet rewards
