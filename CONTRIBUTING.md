@@ -511,7 +511,7 @@ If you have questions about contributing:
 
 - Open a discussion on GitHub
 - Ask in Discord
-- Email: contribute@aevov.dev
+- Email: jesse@aevov.ai
 
 ---
 
