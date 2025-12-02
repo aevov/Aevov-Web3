@@ -1,0 +1,35 @@
+{
+    "name": "aevov/testing-framework",
+    "description": "Comprehensive testing framework for Aevov ecosystem",
+    "type": "project",
+    "require": {
+        "php": "^8.1"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.6",
+        "yoast/phpunit-polyfills": "^2.0",
+        "mockery/mockery": "^1.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "Aevov\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true,
+        "allow-plugins": {
+            "composer/installers": true
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "test:physics": "phpunit --testsuite PhysicsEngine",
+        "test:security": "phpunit --testsuite Security",
+        "test:media": "phpunit --testsuite MediaEngines",
+        "test:aiml": "phpunit --testsuite AIML",
+        "test:infrastructure": "phpunit --testsuite Infrastructure",
+        "test:applications": "phpunit --testsuite Applications",
+        "test:performance": "phpunit --testsuite Performance"
+    }
+}

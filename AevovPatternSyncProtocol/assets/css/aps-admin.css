@@ -1,0 +1,44 @@
+/* APS Admin Styles */
+
+.aps-dashboard,
+.aps-monitoring,
+.aps-patterns {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.aps-card {
+    background-color: #fff;
+    border-radius: 4px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+    padding: 20px;
+}
+
+.aps-card h2 {
+    margin-top: 0;
+}
+
+.aps-patterns table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.aps-patterns th,
+.aps-patterns td {
+    padding: 10px;
+    text-align: left;
+    vertical-align: middle;
+}
+
+.aps-patterns tbody tr:nth-child(odd) {
+    background-color: #f9f9f9;
+}
+
+.aps-patterns .actions {
+    text-align: right;
+}
+
+.aps-patterns .actions .button {
+    margin-left: 5px;
+}

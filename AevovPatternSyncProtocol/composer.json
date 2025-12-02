@@ -1,0 +1,22 @@
+{
+    "name": "aevov/aevov-pattern-sync-protocol",
+    "description": "Core plugin for Aevov Pattern Synchronization and Analysis.",
+    "type": "wordpress-plugin",
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Your Name/Company",
+            "email": "your.email@example.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "autoload": {
+        "psr-4": {
+            "APS\\": "Includes/"
+        }
+    },
+    "require-dev": {
+        "yoast/phpunit-polyfills": "^1.0"
+    }
+}

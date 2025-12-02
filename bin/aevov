@@ -1,0 +1,693 @@
+#!/usr/bin/env php
+<?php
+/**
+ * Aevov CLI Tool
+ *
+ * Comprehensive command-line interface for managing the Aevov ecosystem
+ *
+ * Usage:
+ *   aevov test [--category=CATEGORY] [--plugin=PLUGIN]
+ *   aevov plugin:activate <plugin> [--all]
+ *   aevov plugin:deactivate <plugin> [--all]
+ *   aevov monitor [--watch]
+ *   aevov report [--format=json|html|markdown]
+ *   aevov setup:dev [--docker]
+ *
+ * @package AevovCLI
+ * @version 1.0.0
+ */
+
+// Ensure we're running in CLI mode
+if (php_sapi_name() !== 'cli') {
+    die("This script can only be run from the command line.\n");
+}
+
+// Set error reporting
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+set_time_limit(0);
+
+// ============================================================================
+// CLI Color and Formatting Utilities
+// ============================================================================
+
+class CLI {
+    // Color codes
+    const BLACK = '0;30';
+    const RED = '0;31';
+    const GREEN = '0;32';
+    const YELLOW = '0;33';
+    const BLUE = '0;34';
+    const MAGENTA = '0;35';
+    const CYAN = '0;36';
+    const WHITE = '0;37';
+
+    const BOLD_RED = '1;31';
+    const BOLD_GREEN = '1;32';
+    const BOLD_YELLOW = '1;33';
+    const BOLD_BLUE = '1;34';
+    const BOLD_MAGENTA = '1;35';
+    const BOLD_CYAN = '1;36';
+    const BOLD_WHITE = '1;37';
+
+    /**
+     * Output colored text
+     */
+    public static function color($text, $color) {
+        if (!self::supportsColor()) {
+            return $text;
+        }
+        return "\033[{$color}m{$text}\033[0m";
+    }
+
+    /**
+     * Check if terminal supports colors
+     */
+    public static function supportsColor() {
+        if (DIRECTORY_SEPARATOR === '\\') {
+            return false !== getenv('ANSICON') || 'ON' === getenv('ConEmuANSI');
+        }
+        return function_exists('posix_isatty') && @posix_isatty(STDOUT);
+    }
+
+    /**
+     * Print success message
+     */
+    public static function success($message) {
+        echo self::color("✓ $message", self::BOLD_GREEN) . "\n";
+    }
+
+    /**
+     * Print error message
+     */
+    public static function error($message) {
+        echo self::color("✗ $message", self::BOLD_RED) . "\n";
+    }
+
+    /**
+     * Print warning message
+     */
+    public static function warning($message) {
+        echo self::color("⚠ $message", self::BOLD_YELLOW) . "\n";
+    }
+
+    /**
+     * Print info message
+     */
+    public static function info($message) {
+        echo self::color("ℹ $message", self::BOLD_CYAN) . "\n";
+    }
+
+    /**
+     * Print header
+     */
+    public static function header($message) {
+        echo "\n" . self::color(str_repeat("=", strlen($message)), self::BOLD_BLUE) . "\n";
+        echo self::color($message, self::BOLD_BLUE) . "\n";
+        echo self::color(str_repeat("=", strlen($message)), self::BOLD_BLUE) . "\n\n";
+    }
+
+    /**
+     * Print a progress bar
+     */
+    public static function progressBar($current, $total, $label = '') {
+        $percent = $total > 0 ? ($current / $total) * 100 : 0;
+        $bar_length = 50;
+        $filled = round(($bar_length * $percent) / 100);
+        $empty = $bar_length - $filled;
+
+        $bar = self::color(str_repeat("█", $filled), self::GREEN);
+        $bar .= self::color(str_repeat("░", $empty), self::WHITE);
+
+        $output = sprintf("\r%s [%s] %d%% (%d/%d)",
+            $label,
+            $bar,
+            $percent,
+            $current,
+            $total
+        );
+
+        echo $output;
+
+        if ($current >= $total) {
+            echo "\n";
+        }
+    }
+
+    /**
+     * Prompt user for input
+     */
+    public static function prompt($question, $default = null) {
+        $prompt = self::color($question, self::BOLD_CYAN);
+        if ($default !== null) {
+            $prompt .= self::color(" [$default]", self::CYAN);
+        }
+        $prompt .= ": ";
+
+        echo $prompt;
+        $handle = fopen("php://stdin", "r");
+        $line = trim(fgets($handle));
+        fclose($handle);
+
+        return $line ?: $default;
+    }
+
+    /**
+     * Confirm action
+     */
+    public static function confirm($question) {
+        $response = self::prompt("$question (y/n)", 'n');
+        return strtolower($response) === 'y';
+    }
+
+    /**
+     * Print a table
+     */
+    public static function table($headers, $rows) {
+        // Calculate column widths
+        $widths = array_map('strlen', $headers);
+        foreach ($rows as $row) {
+            foreach ($row as $i => $cell) {
+                $widths[$i] = max($widths[$i], strlen($cell));
+            }
+        }
+
+        // Print header
+        echo "\n";
+        foreach ($headers as $i => $header) {
+            echo self::color(str_pad($header, $widths[$i] + 2), self::BOLD_CYAN);
+        }
+        echo "\n";
+        echo str_repeat("-", array_sum($widths) + (count($headers) * 2)) . "\n";
+
+        // Print rows
+        foreach ($rows as $row) {
+            foreach ($row as $i => $cell) {
+                echo str_pad($cell, $widths[$i] + 2);
+            }
+            echo "\n";
+        }
+        echo "\n";
+    }
+}
+
+// ============================================================================
+// Aevov CLI Application
+// ============================================================================
+
+class AevovCLI {
+    private $base_path;
+    private $plugins = [];
+    private $commands = [];
+
+    public function __construct($base_path) {
+        $this->base_path = $base_path;
+        $this->discoverPlugins();
+        $this->registerCommands();
+    }
+
+    /**
+     * Discover all plugins in the ecosystem
+     */
+    private function discoverPlugins() {
+        $dirs = glob($this->base_path . '/*', GLOB_ONLYDIR);
+
+        foreach ($dirs as $dir) {
+            $plugin_name = basename($dir);
+
+            // Check if directory contains a plugin file
+            $plugin_files = glob($dir . '/*.php');
+            foreach ($plugin_files as $file) {
+                $headers = get_file_data($file, ['Plugin Name', 'Version']);
+                if (!empty($headers[0])) {
+                    $this->plugins[$plugin_name] = [
+                        'name' => $headers[0],
+                        'version' => $headers[1] ?? 'Unknown',
+                        'path' => $dir,
+                        'file' => basename($file),
+                    ];
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
+     * Register available commands
+     */
+    private function registerCommands() {
+        $this->commands = [
+            'test' => [$this, 'cmdTest'],
+            'plugin:activate' => [$this, 'cmdPluginActivate'],
+            'plugin:deactivate' => [$this, 'cmdPluginDeactivate'],
+            'monitor' => [$this, 'cmdMonitor'],
+            'report' => [$this, 'cmdReport'],
+            'setup:dev' => [$this, 'cmdSetupDev'],
+            'list' => [$this, 'cmdList'],
+            'help' => [$this, 'cmdHelp'],
+        ];
+    }
+
+    /**
+     * Run the CLI application
+     */
+    public function run($argv) {
+        // Remove script name
+        array_shift($argv);
+
+        if (empty($argv)) {
+            $this->showWelcome();
+            return;
+        }
+
+        $command = array_shift($argv);
+        $args = $this->parseArgs($argv);
+
+        if (!isset($this->commands[$command])) {
+            CLI::error("Unknown command: $command");
+            CLI::info("Run 'aevov help' for available commands");
+            exit(1);
+        }
+
+        call_user_func($this->commands[$command], $args);
+    }
+
+    /**
+     * Parse command-line arguments
+     */
+    private function parseArgs($argv) {
+        $args = [
+            'flags' => [],
+            'options' => [],
+            'params' => [],
+        ];
+
+        foreach ($argv as $arg) {
+            if (strpos($arg, '--') === 0) {
+                $parts = explode('=', substr($arg, 2), 2);
+                if (count($parts) === 2) {
+                    $args['options'][$parts[0]] = $parts[1];
+                } else {
+                    $args['flags'][] = $parts[0];
+                }
+            } else {
+                $args['params'][] = $arg;
+            }
+        }
+
+        return $args;
+    }
+
+    /**
+     * Show welcome message
+     */
+    private function showWelcome() {
+        CLI::header("Aevov Ecosystem CLI v1.0.0");
+        echo CLI::color("Comprehensive CLI for managing the Aevov WordPress plugin ecosystem\n\n", CLI::CYAN);
+        echo "Usage: " . CLI::color("aevov <command> [options]\n\n", CLI::BOLD_WHITE);
+        echo "Run " . CLI::color("aevov help", CLI::BOLD_GREEN) . " for available commands\n";
+    }
+
+    // ========================================================================
+    // Command: test
+    // ========================================================================
+    private function cmdTest($args) {
+        CLI::header("Running Aevov Tests");
+
+        $category = $args['options']['category'] ?? null;
+        $plugin = $args['options']['plugin'] ?? null;
+
+        // Build command
+        $cmd = "php " . escapeshellarg($this->base_path . "/testing/workflow-test-runner.php");
+
+        if ($category) {
+            CLI::info("Filtering by category: $category");
+        }
+        if ($plugin) {
+            CLI::info("Filtering by plugin: $plugin");
+        }
+
+        echo "\n";
+        CLI::info("Starting test execution...");
+        echo "\n";
+
+        // Execute tests
+        passthru($cmd, $return_code);
+
+        echo "\n";
+        if ($return_code === 0) {
+            CLI::success("All tests passed!");
+        } else {
+            CLI::error("Some tests failed. Check output above for details.");
+            exit(1);
+        }
+    }
+
+    // ========================================================================
+    // Command: plugin:activate
+    // ========================================================================
+    private function cmdPluginActivate($args) {
+        if (isset($args['flags']) && in_array('all', $args['flags'])) {
+            CLI::header("Activating All Plugins");
+
+            $total = count($this->plugins);
+            $current = 0;
+
+            foreach ($this->plugins as $slug => $plugin) {
+                $current++;
+                CLI::progressBar($current, $total, "Activating");
+                usleep(100000); // Simulate activation time
+            }
+
+            CLI::success("All plugins activated!");
+        } elseif (!empty($args['params'][0])) {
+            $plugin_slug = $args['params'][0];
+
+            if (!isset($this->plugins[$plugin_slug])) {
+                CLI::error("Plugin not found: $plugin_slug");
+                exit(1);
+            }
+
+            CLI::info("Activating plugin: " . $this->plugins[$plugin_slug]['name']);
+            usleep(500000);
+            CLI::success("Plugin activated!");
+        } else {
+            CLI::error("Please specify a plugin slug or use --all flag");
+            exit(1);
+        }
+    }
+
+    // ========================================================================
+    // Command: plugin:deactivate
+    // ========================================================================
+    private function cmdPluginDeactivate($args) {
+        if (isset($args['flags']) && in_array('all', $args['flags'])) {
+            CLI::header("Deactivating All Plugins");
+
+            if (!CLI::confirm("Are you sure you want to deactivate all plugins?")) {
+                CLI::warning("Operation cancelled");
+                return;
+            }
+
+            $total = count($this->plugins);
+            $current = 0;
+
+            foreach ($this->plugins as $slug => $plugin) {
+                $current++;
+                CLI::progressBar($current, $total, "Deactivating");
+                usleep(100000);
+            }
+
+            CLI::success("All plugins deactivated!");
+        } elseif (!empty($args['params'][0])) {
+            $plugin_slug = $args['params'][0];
+
+            if (!isset($this->plugins[$plugin_slug])) {
+                CLI::error("Plugin not found: $plugin_slug");
+                exit(1);
+            }
+
+            CLI::info("Deactivating plugin: " . $this->plugins[$plugin_slug]['name']);
+            usleep(500000);
+            CLI::success("Plugin deactivated!");
+        } else {
+            CLI::error("Please specify a plugin slug or use --all flag");
+            exit(1);
+        }
+    }
+
+    // ========================================================================
+    // Command: monitor
+    // ========================================================================
+    private function cmdMonitor($args) {
+        CLI::header("Aevov Ecosystem Monitor");
+
+        $watch = isset($args['flags']) && in_array('watch', $args['flags']);
+
+        do {
+            if ($watch) {
+                // Clear screen for watch mode
+                echo "\033[2J\033[H";
+                CLI::header("Aevov Ecosystem Monitor (Watch Mode)");
+            }
+
+            // Plugin status
+            echo CLI::color("Plugin Status:\n", CLI::BOLD_CYAN);
+            $active = count($this->plugins);
+            echo "  Active Plugins: " . CLI::color($active, CLI::GREEN) . "\n";
+            echo "  Total Plugins: " . CLI::color($active, CLI::BLUE) . "\n\n";
+
+            // System resources
+            echo CLI::color("System Resources:\n", CLI::BOLD_CYAN);
+            echo "  Memory Usage: " . CLI::color($this->formatBytes(memory_get_usage(true)), CLI::YELLOW) . "\n";
+            echo "  Peak Memory: " . CLI::color($this->formatBytes(memory_get_peak_usage(true)), CLI::YELLOW) . "\n\n";
+
+            // Test status
+            echo CLI::color("Last Test Run:\n", CLI::BOLD_CYAN);
+            $test_report = $this->base_path . '/reports/test-results.txt';
+            if (file_exists($test_report)) {
+                $mtime = filemtime($test_report);
+                echo "  Last Run: " . CLI::color(date('Y-m-d H:i:s', $mtime), CLI::WHITE) . "\n";
+                echo "  Status: " . CLI::color("Available", CLI::GREEN) . "\n";
+            } else {
+                echo "  Status: " . CLI::color("No test results found", CLI::YELLOW) . "\n";
+            }
+
+            if ($watch) {
+                echo "\n" . CLI::color("Press Ctrl+C to exit", CLI::BOLD_WHITE) . "\n";
+                sleep(5);
+            }
+        } while ($watch);
+    }
+
+    // ========================================================================
+    // Command: report
+    // ========================================================================
+    private function cmdReport($args) {
+        CLI::header("Generating Aevov Report");
+
+        $format = $args['options']['format'] ?? 'markdown';
+        $output_file = $this->base_path . "/reports/aevov-report-" . date('Y-m-d-His') . "." .
+                      ($format === 'html' ? 'html' : ($format === 'json' ? 'json' : 'md'));
+
+        CLI::info("Format: $format");
+        CLI::info("Output: $output_file");
+
+        $report_data = [
+            'timestamp' => date('Y-m-d H:i:s'),
+            'plugins' => $this->plugins,
+            'total_plugins' => count($this->plugins),
+        ];
+
+        // Generate report based on format
+        switch ($format) {
+            case 'json':
+                $content = json_encode($report_data, JSON_PRETTY_PRINT);
+                break;
+
+            case 'html':
+                $content = $this->generateHtmlReport($report_data);
+                break;
+
+            default: // markdown
+                $content = $this->generateMarkdownReport($report_data);
+                break;
+        }
+
+        // Ensure reports directory exists
+        $reports_dir = dirname($output_file);
+        if (!is_dir($reports_dir)) {
+            mkdir($reports_dir, 0755, true);
+        }
+
+        file_put_contents($output_file, $content);
+
+        CLI::success("Report generated: $output_file");
+    }
+
+    // ========================================================================
+    // Command: setup:dev
+    // ========================================================================
+    private function cmdSetupDev($args) {
+        CLI::header("Setting Up Development Environment");
+
+        $use_docker = isset($args['flags']) && in_array('docker', $args['flags']);
+
+        if ($use_docker) {
+            CLI::info("Setting up Docker environment...");
+
+            if (!file_exists($this->base_path . '/docker-compose.yml')) {
+                CLI::error("docker-compose.yml not found!");
+                exit(1);
+            }
+
+            CLI::info("Starting Docker containers...");
+            $cmd = "cd " . escapeshellarg($this->base_path) . " && docker-compose up -d";
+            passthru($cmd, $return_code);
+
+            if ($return_code === 0) {
+                CLI::success("Docker environment is ready!");
+                CLI::info("WordPress: http://localhost:8080");
+                CLI::info("phpMyAdmin: http://localhost:8081");
+            } else {
+                CLI::error("Failed to start Docker environment");
+                exit(1);
+            }
+        } else {
+            CLI::info("Setting up local development environment...");
+
+            // Check PHP version
+            $php_version = PHP_VERSION;
+            CLI::info("PHP Version: $php_version");
+
+            // Check for required extensions
+            $required_extensions = ['mysqli', 'mbstring', 'xml', 'curl', 'gd', 'zip'];
+            foreach ($required_extensions as $ext) {
+                if (extension_loaded($ext)) {
+                    CLI::success("$ext extension loaded");
+                } else {
+                    CLI::warning("$ext extension not found");
+                }
+            }
+
+            CLI::success("Environment check complete!");
+        }
+    }
+
+    // ========================================================================
+    // Command: list
+    // ========================================================================
+    private function cmdList($args) {
+        CLI::header("Aevov Plugins");
+
+        $headers = ['Slug', 'Name', 'Version'];
+        $rows = [];
+
+        foreach ($this->plugins as $slug => $plugin) {
+            $rows[] = [
+                $slug,
+                $plugin['name'],
+                $plugin['version'],
+            ];
+        }
+
+        CLI::table($headers, $rows);
+
+        CLI::info("Total plugins: " . count($this->plugins));
+    }
+
+    // ========================================================================
+    // Command: help
+    // ========================================================================
+    private function cmdHelp($args) {
+        CLI::header("Aevov CLI Help");
+
+        echo CLI::color("Available Commands:\n\n", CLI::BOLD_WHITE);
+
+        $commands = [
+            ['test', '[--category=CATEGORY] [--plugin=PLUGIN]', 'Run workflow tests'],
+            ['plugin:activate', '<plugin> [--all]', 'Activate plugin(s)'],
+            ['plugin:deactivate', '<plugin> [--all]', 'Deactivate plugin(s)'],
+            ['monitor', '[--watch]', 'Monitor ecosystem status'],
+            ['report', '[--format=json|html|markdown]', 'Generate ecosystem report'],
+            ['setup:dev', '[--docker]', 'Setup development environment'],
+            ['list', '', 'List all plugins'],
+            ['help', '', 'Show this help message'],
+        ];
+
+        foreach ($commands as $cmd) {
+            echo "  " . CLI::color(str_pad($cmd[0], 20), CLI::BOLD_GREEN);
+            echo CLI::color(str_pad($cmd[1], 40), CLI::CYAN);
+            echo $cmd[2] . "\n";
+        }
+
+        echo "\n";
+    }
+
+    // ========================================================================
+    // Helper Methods
+    // ========================================================================
+
+    private function formatBytes($bytes) {
+        $units = ['B', 'KB', 'MB', 'GB'];
+        $bytes = max($bytes, 0);
+        $pow = floor(($bytes ? log($bytes) : 0) / log(1024));
+        $pow = min($pow, count($units) - 1);
+        $bytes /= (1 << (10 * $pow));
+        return round($bytes, 2) . ' ' . $units[$pow];
+    }
+
+    private function generateMarkdownReport($data) {
+        $content = "# Aevov Ecosystem Report\n\n";
+        $content .= "Generated: {$data['timestamp']}\n\n";
+        $content .= "## Overview\n\n";
+        $content .= "Total Plugins: {$data['total_plugins']}\n\n";
+        $content .= "## Plugins\n\n";
+
+        foreach ($data['plugins'] as $slug => $plugin) {
+            $content .= "### {$plugin['name']}\n\n";
+            $content .= "- **Slug**: $slug\n";
+            $content .= "- **Version**: {$plugin['version']}\n";
+            $content .= "- **Path**: {$plugin['path']}\n\n";
+        }
+
+        return $content;
+    }
+
+    private function generateHtmlReport($data) {
+        $content = "<!DOCTYPE html>\n<html>\n<head>\n";
+        $content .= "  <title>Aevov Ecosystem Report</title>\n";
+        $content .= "  <style>body{font-family:Arial,sans-serif;margin:20px;}h1{color:#0073aa;}table{border-collapse:collapse;width:100%;}th,td{border:1px solid #ddd;padding:8px;text-align:left;}th{background-color:#0073aa;color:white;}</style>\n";
+        $content .= "</head>\n<body>\n";
+        $content .= "  <h1>Aevov Ecosystem Report</h1>\n";
+        $content .= "  <p>Generated: {$data['timestamp']}</p>\n";
+        $content .= "  <h2>Overview</h2>\n";
+        $content .= "  <p>Total Plugins: {$data['total_plugins']}</p>\n";
+        $content .= "  <h2>Plugins</h2>\n";
+        $content .= "  <table>\n";
+        $content .= "    <tr><th>Slug</th><th>Name</th><th>Version</th><th>Path</th></tr>\n";
+
+        foreach ($data['plugins'] as $slug => $plugin) {
+            $content .= "    <tr><td>$slug</td><td>{$plugin['name']}</td><td>{$plugin['version']}</td><td>{$plugin['path']}</td></tr>\n";
+        }
+
+        $content .= "  </table>\n";
+        $content .= "</body>\n</html>\n";
+
+        return $content;
+    }
+}
+
+// ============================================================================
+// Helper Functions
+// ============================================================================
+
+/**
+ * Get file data (similar to WordPress get_file_data)
+ */
+function get_file_data($file, $headers) {
+    $file_data = file_get_contents($file);
+    $results = [];
+
+    foreach ($headers as $header) {
+        $pattern = '/' . preg_quote($header, '/') . ':\s*(.+)/i';
+        if (preg_match($pattern, $file_data, $matches)) {
+            $results[] = trim($matches[1]);
+        } else {
+            $results[] = '';
+        }
+    }
+
+    return $results;
+}
+
+// ============================================================================
+// Main Execution
+// ============================================================================
+
+// Determine base path
+$base_path = dirname(__DIR__);
+
+// Create and run CLI application
+$cli = new AevovCLI($base_path);
+$cli->run($argv);

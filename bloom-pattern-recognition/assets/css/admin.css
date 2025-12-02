@@ -1,0 +1,229 @@
+.bloom-dashboard {
+    margin-top: 20px;
+}
+
+.bloom-card {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+}
+
+.bloom-card h2 {
+    margin-top: 0;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #eee;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-item label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.stat-item span {
+    font-size: 24px;
+    color: #2271b1;
+}
+
+.bloom-patterns table {
+    margin-top: 20px;
+}
+
+.upload-form {
+    max-width: 800px;
+    background: #fff;
+    padding: 20px;
+    border: 1px solid #ccd0d4;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+}
+
+
+
+// 4. /assets/css/admin.css
+// Main admin styles for BLOOM Pattern System
+
+/* General Layout */
+.bloom-wrap {
+    margin: 20px;
+    max-width: 1600px;
+}
+
+.bloom-header {
+    display: flex
+}
+
+.bloom-wrap {
+    margin: 20px;
+    max-width: 1600px;
+}
+
+.bloom-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.bloom-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+/* Grid Layout */
+.bloom-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+/* Status Indicators */
+.status-indicator {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.status-indicator:before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+.status-indicator.healthy {
+    background: #ebf9f0;
+    color: #0e6245;
+}
+
+.status-indicator.healthy:before {
+    background: #059669;
+}
+
+.status-indicator.warning {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status-indicator.warning:before {
+    background: #d97706;
+}
+
+.status-indicator.critical {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.status-indicator.critical:before {
+    background: #dc2626;
+}
+
+/* Charts */
+.chart-container {
+    position: relative;
+    height: 300px;
+    margin-bottom: 20px;
+}
+
+/* Forms */
+.bloom-form-group {
+    margin-bottom: 20px;
+}
+
+.bloom-form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.bloom-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.bloom-select {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #fff;
+    font-size: 14px;
+}
+
+/* Buttons */
+.bloom-button {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.bloom-button-primary {
+    background: #2563eb;
+    color: #fff;
+    border: none;
+}
+
+.bloom-button-primary:hover {
+    background: #1d4ed8;
+}
+
+.bloom-button-secondary {
+    background: #fff;
+    color: #1f2937;
+    border: 1px solid #ddd;
+}
+
+.bloom-button-secondary:hover {
+    background: #f9fafb;
+}
+
+/* Tables */
+.bloom-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.bloom-table th,
+.bloom-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.bloom-table th {
+    background: #f9fafb;
+    font-weight: 500;
+}
+
+.bloom-table tr:hover {
+    background: #f9fafb;
+}

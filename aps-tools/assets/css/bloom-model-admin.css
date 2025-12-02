@@ -1,0 +1,284 @@
+/* assets/css/bloom-model-admin.css */
+
+/* Meta Box Styles */
+.bloom-model-meta,
+.bloom-chunk-meta {
+    padding: 12px;
+    background: #fff;
+}
+
+.bloom-model-meta p,
+.bloom-chunk-meta p {
+    margin: 0 0 15px;
+}
+
+.bloom-model-meta label,
+.bloom-chunk-meta label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.bloom-model-meta input[type="text"],
+.bloom-model-meta input[type="number"],
+.bloom-chunk-meta input[type="text"],
+.bloom-chunk-meta input[type="number"],
+.bloom-chunk-meta select {
+    width: 100%;
+    max-width: 400px;
+}
+
+/* Chunk Upload Area */
+.chunk-upload {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.chunk-upload input[type="file"] {
+    width: 100%;
+    margin: 10px 0;
+    padding: 10px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+}
+
+/* Chunk Preview */
+.chunk-preview {
+    margin-top: 15px;
+    padding: 15px;
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 3px;
+}
+
+.chunk-preview-data {
+    font-family: monospace;
+    font-size: 13px;
+}
+
+.preview-row {
+    display: flex;
+    margin-bottom: 8px;
+    padding: 4px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.preview-row:last-child {
+    border-bottom: none;
+}
+
+.preview-label {
+    flex: 0 0 100px;
+    font-weight: 600;
+    color: #333;
+}
+
+.preview-value {
+    flex: 1;
+    color: #666;
+}
+
+/* Status Indicators */
+.status-complete {
+    color: #46b450;
+}
+
+.status-incomplete {
+    color: #dc3232;
+}
+
+.status-pending {
+    color: #ffb900;
+}
+
+/* Model List Table */
+.wp-list-table .column-version {
+    width: 10%;
+}
+
+.wp-list-table .column-chunks {
+    width: 15%;
+}
+
+.wp-list-table .column-size {
+    width: 10%;
+}
+
+.wp-list-table .column-category {
+    width: 15%;
+}
+
+/* Chunk List Table */
+.wp-list-table .column-sku {
+    width: 15%;
+}
+
+.wp-list-table .column-size {
+    width: 10%;
+}
+
+.wp-list-table .column-order {
+    width: 8%;
+}
+
+.wp-list-table .column-model {
+    width: 20%;
+}
+
+.wp-list-table .column-uploaded {
+    width: 15%;
+}
+
+/* Model Grid View */
+.model-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.model-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 15px;
+}
+
+.model-card-header {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.model-card-header h3 {
+    margin: 0;
+    font-size: 16px;
+}
+
+.model-meta {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.model-meta-item {
+    background: #f9f9f9;
+    padding: 8px;
+    border-radius: 3px;
+}
+
+.meta-label {
+    display: block;
+    font-size: 12px;
+    color: #666;
+}
+
+.meta-value {
+    display: block;
+    font-weight: 600;
+    color: #333;
+}
+
+.model-progress {
+    margin: 15px 0;
+}
+
+.progress-bar {
+    height: 8px;
+    background: #f0f0f0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: #2271b1;
+    transition: width 0.3s ease;
+}
+
+.model-actions {
+    border-top: 1px solid #eee;
+    padding-top: 15px;
+    text-align: right;
+}
+
+/* Taxonomy Terms */
+.taxonomy-terms {
+    margin: 10px 0;
+}
+
+.term-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    margin: 0 4px 4px 0;
+    background: #f0f0f0;
+    border-radius: 3px;
+    font-size: 12px;
+    color: #666;
+}
+
+/* Loading States */
+.loading {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.loading-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Error States */
+.error-message {
+    padding: 10px;
+    margin: 10px 0;
+    background: #dc3232;
+    color: #fff;
+    border-radius: 3px;
+}
+
+/* Success States */
+.success-message {
+    padding: 10px;
+    margin: 10px 0;
+    background: #46b450;
+    color: #fff;
+    border-radius: 3px;
+}
+
+/* Responsive Adjustments */
+@media screen and (max-width: 782px) {
+    .model-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .model-meta {
+        grid-template-columns: 1fr;
+    }
+
+    .wp-list-table .column-version,
+    .wp-list-table .column-chunks,
+    .wp-list-table .column-size,
+    .wp-list-table .column-category,
+    .wp-list-table .column-sku,
+    .wp-list-table .column-order,
+    .wp-list-table .column-model,
+    .wp-list-table .column-uploaded {
+        display: none;
+    }
+}

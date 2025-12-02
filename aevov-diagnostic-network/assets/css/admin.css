@@ -1,0 +1,1037 @@
+/**
+ * Aevov Diagnostic Network - Admin Styles
+ * Comprehensive styling for the diagnostic network admin interface
+ */
+
+/* ==========================================================================
+   Base Styles
+   ========================================================================== */
+
+.adn-admin-page {
+    margin: 20px 0;
+}
+
+.adn-admin-page h1 {
+    margin-bottom: 20px;
+    color: #23282d;
+}
+
+.adn-admin-page .nav-tab-wrapper {
+    margin-bottom: 20px;
+}
+
+/* ==========================================================================
+   Dashboard Styles
+   ========================================================================== */
+
+.adn-dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.adn-dashboard-card {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    padding: 20px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.adn-dashboard-card h3 {
+    margin: 0 0 15px 0;
+    color: #23282d;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.adn-health-indicator {
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+}
+
+.adn-health-indicator.good {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.adn-health-indicator.warning {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeaa7;
+}
+
+.adn-health-indicator.critical {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.adn-health-score {
+    font-size: 48px;
+    font-weight: 700;
+    color: #007cba;
+    margin: 10px 0;
+    display: block;
+}
+
+.adn-component-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.adn-stat-item {
+    text-align: center;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 4px;
+}
+
+.adn-stat-number {
+    font-size: 24px;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.adn-stat-number.passing {
+    color: #28a745;
+}
+
+.adn-stat-number.warning {
+    color: #ffc107;
+}
+
+.adn-stat-number.failing {
+    color: #dc3545;
+}
+
+.adn-stat-number.unknown {
+    color: #6c757d;
+}
+
+.adn-stat-label {
+    font-size: 12px;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.adn-quick-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.adn-quick-actions .button {
+    flex: 1;
+    min-width: 120px;
+    text-align: center;
+}
+
+/* ==========================================================================
+   Chart Containers
+   ========================================================================== */
+
+.adn-chart-container {
+    position: relative;
+    height: 200px;
+    margin: 15px 0;
+}
+
+.adn-chart-container canvas {
+    max-height: 200px;
+}
+
+/* ==========================================================================
+   Component Table Styles
+   ========================================================================== */
+
+.adn-components-table-wrapper {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.adn-table-header {
+    background: #f8f9fa;
+    padding: 15px 20px;
+    border-bottom: 1px solid #dee2e6;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.adn-table-header h3 {
+    margin: 0;
+    color: #23282d;
+}
+
+.adn-table-actions {
+    display: flex;
+    gap: 10px;
+}
+
+#adn-components-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#adn-components-table th,
+#adn-components-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #dee2e6;
+}
+
+#adn-components-table th {
+    background: #f8f9fa;
+    font-weight: 600;
+    color: #495057;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+#adn-components-table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.adn-status-indicator {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.adn-status-indicator.status-pass {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.adn-status-indicator.status-fail {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.adn-status-indicator.status-warning {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.adn-status-indicator.status-unknown {
+    background-color: #e2e3e5;
+    color: #383d41;
+}
+
+.adn-status-indicator.status-testing {
+    background-color: #cce7ff;
+    color: #004085;
+    animation: pulse 1.5s infinite;
+}
+
+.adn-status-indicator.status-error {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+.adn-component-actions {
+    display: flex;
+    gap: 5px;
+}
+
+.adn-component-actions .button {
+    padding: 4px 8px;
+    font-size: 11px;
+    line-height: 1.2;
+    min-height: auto;
+}
+
+/* ==========================================================================
+   AI Auto-Fix Styles
+   ========================================================================== */
+
+.adn-autofix-section {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+.adn-autofix-header {
+    background: #f8f9fa;
+    padding: 15px 20px;
+    border-bottom: 1px solid #dee2e6;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.adn-autofix-content {
+    padding: 20px;
+}
+
+.adn-issues-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.adn-issues-panel,
+.adn-fixes-panel {
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.adn-panel-header {
+    background: #f8f9fa;
+    padding: 10px 15px;
+    border-bottom: 1px solid #dee2e6;
+    font-weight: 600;
+    color: #495057;
+}
+
+.adn-panel-content {
+    padding: 15px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.adn-fix-card {
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    padding: 15px;
+    margin-bottom: 15px;
+    background: #fff;
+}
+
+.adn-fix-card:last-child {
+    margin-bottom: 0;
+}
+
+.adn-fix-card h4 {
+    margin: 0 0 10px 0;
+    color: #23282d;
+    font-size: 14px;
+}
+
+.adn-fix-card p {
+    margin: 0 0 15px 0;
+    color: #666;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.adn-fix-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.adn-fix-actions .button {
+    flex: 1;
+    text-align: center;
+    font-size: 12px;
+    padding: 6px 12px;
+}
+
+.adn-issue {
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.adn-issue.issue-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border-left: 4px solid #dc3545;
+}
+
+.adn-issue.issue-warning {
+    background-color: #fff3cd;
+    color: #856404;
+    border-left: 4px solid #ffc107;
+}
+
+.adn-issue.issue-info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border-left: 4px solid #17a2b8;
+}
+
+.severity-critical {
+    color: #dc3545;
+    font-weight: 600;
+}
+
+.severity-high {
+    color: #fd7e14;
+    font-weight: 600;
+}
+
+.severity-medium {
+    color: #ffc107;
+    font-weight: 600;
+}
+
+.severity-low {
+    color: #28a745;
+    font-weight: 600;
+}
+
+/* ==========================================================================
+   System Status Styles
+   ========================================================================== */
+
+.adn-system-status-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.adn-status-card {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    padding: 20px;
+}
+
+.adn-status-card h4 {
+    margin: 0 0 15px 0;
+    color: #23282d;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.adn-status-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #f1f1f1;
+}
+
+.adn-status-item:last-child {
+    border-bottom: none;
+}
+
+.adn-status-label {
+    font-size: 13px;
+    color: #666;
+}
+
+.adn-status-value {
+    font-size: 13px;
+    font-weight: 600;
+    color: #23282d;
+}
+
+.adn-ai-engine-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.adn-engine-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.adn-engine-indicator.online {
+    background-color: #28a745;
+}
+
+.adn-engine-indicator.offline {
+    background-color: #dc3545;
+}
+
+.adn-engine-indicator.unknown {
+    background-color: #6c757d;
+}
+
+/* ==========================================================================
+   Settings Styles
+   ========================================================================== */
+
+.adn-settings-form {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    padding: 20px;
+}
+
+.adn-settings-section {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.adn-settings-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.adn-settings-section h3 {
+    margin: 0 0 15px 0;
+    color: #23282d;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.adn-form-group {
+    margin-bottom: 20px;
+}
+
+.adn-form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #23282d;
+}
+
+.adn-form-group input,
+.adn-form-group select,
+.adn-form-group textarea {
+    width: 100%;
+    max-width: 400px;
+    padding: 8px 12px;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.adn-form-group textarea {
+    height: 100px;
+    resize: vertical;
+}
+
+.adn-form-group .description {
+    margin-top: 5px;
+    font-size: 13px;
+    color: #666;
+    font-style: italic;
+}
+
+.adn-form-actions {
+    padding-top: 20px;
+    border-top: 1px solid #dee2e6;
+}
+
+/* ==========================================================================
+   Modal Styles
+   ========================================================================== */
+
+.adn-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 100000;
+}
+
+.adn-modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    max-width: 90%;
+    max-height: 90%;
+    overflow: hidden;
+}
+
+.adn-modal-header {
+    padding: 20px;
+    border-bottom: 1px solid #dee2e6;
+    background: #f8f9fa;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.adn-modal-title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #23282d;
+}
+
+.adn-modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #666;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.adn-modal-close:hover {
+    color: #000;
+}
+
+.adn-modal-body {
+    padding: 20px;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.adn-modal-footer {
+    padding: 20px;
+    border-top: 1px solid #dee2e6;
+    background: #f8f9fa;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+/* Progress Modal */
+.adn-progress-modal .adn-modal-content {
+    width: 400px;
+    max-width: 90%;
+}
+
+.adn-progress-content {
+    text-align: center;
+    padding: 30px 20px;
+}
+
+.adn-progress-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #007cba;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 20px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.adn-progress-message {
+    font-size: 16px;
+    color: #23282d;
+    margin-bottom: 10px;
+}
+
+.adn-progress-details {
+    font-size: 14px;
+    color: #666;
+}
+
+/* Component Details Modal */
+.adn-component-details-modal .adn-modal-content {
+    width: 600px;
+    max-width: 90%;
+}
+
+.adn-component-details {
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.adn-detail-section {
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #f1f1f1;
+}
+
+.adn-detail-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.adn-detail-section h4 {
+    margin: 0 0 10px 0;
+    color: #23282d;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.adn-test-result {
+    margin-bottom: 15px;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 4px;
+}
+
+.adn-test-result:last-child {
+    margin-bottom: 0;
+}
+
+/* Fix Preview Modal */
+.adn-fix-preview-modal .adn-modal-content {
+    width: 800px;
+    max-width: 95%;
+}
+
+.adn-fix-preview-modal pre {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    padding: 15px;
+    overflow-x: auto;
+    font-size: 13px;
+    line-height: 1.4;
+    margin: 0;
+}
+
+/* ==========================================================================
+   Notification Styles
+   ========================================================================== */
+
+.adn-notification {
+    position: fixed;
+    top: 32px;
+    right: 20px;
+    padding: 15px 20px;
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 100001;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    max-width: 400px;
+    word-wrap: break-word;
+}
+
+.adn-notification-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.adn-notification-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.adn-notification-warning {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeaa7;
+}
+
+.adn-notification-info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}
+
+/* ==========================================================================
+   Architecture Map Styles
+   ========================================================================== */
+
+.adn-architecture-map {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.adn-map-controls {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 4px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.adn-map-legend {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    font-size: 12px;
+}
+
+.adn-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.adn-legend-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+}
+
+.adn-legend-color.healthy {
+    background-color: #28a745;
+}
+
+.adn-legend-color.warning {
+    background-color: #ffc107;
+}
+
+.adn-legend-color.critical {
+    background-color: #dc3545;
+}
+
+.adn-legend-color.unknown {
+    background-color: #6c757d;
+}
+
+.adn-map-container {
+    min-height: 500px;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* ==========================================================================
+   Responsive Design
+   ========================================================================== */
+
+@media (max-width: 1200px) {
+    .adn-dashboard-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+    
+    .adn-issues-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .adn-dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .adn-component-stats {
+        grid-template-columns: 1fr;
+    }
+    
+    .adn-quick-actions {
+        flex-direction: column;
+    }
+    
+    .adn-quick-actions .button {
+        flex: none;
+    }
+    
+    .adn-table-header {
+        flex-direction: column;
+        gap: 15px;
+        align-items: stretch;
+    }
+    
+    .adn-table-actions {
+        justify-content: center;
+    }
+    
+    .adn-component-actions {
+        flex-direction: column;
+    }
+    
+    .adn-modal-content {
+        width: 95%;
+        margin: 20px;
+        transform: none;
+        position: relative;
+        top: auto;
+        left: auto;
+    }
+    
+    .adn-modal {
+        padding: 20px;
+        overflow-y: auto;
+    }
+    
+    .adn-map-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .adn-map-legend {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 480px) {
+    .adn-admin-page {
+        margin: 10px 0;
+    }
+    
+    .adn-dashboard-card,
+    .adn-autofix-section,
+    .adn-settings-form {
+        padding: 15px;
+    }
+    
+    .adn-notification {
+        right: 10px;
+        left: 10px;
+        max-width: none;
+    }
+    
+    .adn-form-group input,
+    .adn-form-group select,
+    .adn-form-group textarea {
+        max-width: none;
+    }
+}
+
+/* ==========================================================================
+   Utility Classes
+   ========================================================================== */
+
+.adn-text-center {
+    text-align: center;
+}
+
+.adn-text-right {
+    text-align: right;
+}
+
+.adn-text-muted {
+    color: #666;
+}
+
+.adn-text-success {
+    color: #28a745;
+}
+
+.adn-text-warning {
+    color: #ffc107;
+}
+
+.adn-text-danger {
+    color: #dc3545;
+}
+
+.adn-text-info {
+    color: #17a2b8;
+}
+
+.adn-mb-0 {
+    margin-bottom: 0;
+}
+
+.adn-mb-10 {
+    margin-bottom: 10px;
+}
+
+.adn-mb-20 {
+    margin-bottom: 20px;
+}
+
+.adn-mt-10 {
+    margin-top: 10px;
+}
+
+.adn-mt-20 {
+    margin-top: 20px;
+}
+
+.adn-hidden {
+    display: none;
+}
+
+.adn-loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+/* ==========================================================================
+   WordPress Admin Integration
+   ========================================================================== */
+
+.wp-admin .adn-admin-page .button-primary {
+    background: #007cba;
+    border-color: #007cba;
+}
+
+.wp-admin .adn-admin-page .button-primary:hover {
+    background: #005a87;
+    border-color: #005a87;
+}
+
+.wp-admin .adn-admin-page .nav-tab-active {
+    background: #fff;
+    border-bottom: 1px solid #fff;
+}
+
+/* DataTables Integration */
+.dataTables_wrapper .dataTables_length,
+.dataTables_wrapper .dataTables_filter,
+.dataTables_wrapper .dataTables_info,
+.dataTables_wrapper .dataTables_paginate {
+    margin: 10px 0;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    padding: 6px 12px;
+    margin: 0 2px;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    background: #fff;
+    color: #23282d;
+    text-decoration: none;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background: #f8f9fa;
+    border-color: #adb5bd;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    background: #007cba;
+    border-color: #007cba;
+    color: #fff;
+}
+
+/* Chart.js Integration */
+.chartjs-tooltip {
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: 12px;
+}

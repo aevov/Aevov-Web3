@@ -1,0 +1,182 @@
+{
+    "test_date": "2025-11-19 06:05:52",
+    "total_plugins": 25,
+    "results": {
+        "aevov-application-forge": {
+            "plugin_name": "aevov-application-forge",
+            "tests_total": 8,
+            "tests_passed": 8,
+            "tests_failed": 0,
+            "bugs": []
+        },
+        "aevov-chat-ui": {
+            "plugin_name": "aevov-chat-ui",
+            "tests_total": 8,
+            "tests_passed": 7,
+            "tests_failed": 1,
+            "bugs": []
+        },
+        "aevov-chunk-registry": {
+            "plugin_name": "aevov-chunk-registry",
+            "tests_total": 8,
+            "tests_passed": 8,
+            "tests_failed": 0,
+            "bugs": []
+        },
+        "aevov-cognitive-engine": {
+            "plugin_name": "aevov-cognitive-engine",
+            "tests_total": 8,
+            "tests_passed": 8,
+            "tests_failed": 0,
+            "bugs": []
+        },
+        "aevov-cubbit-cdn": {
+            "plugin_name": "aevov-cubbit-cdn",
+            "tests_total": 8,
+            "tests_passed": 7,
+            "tests_failed": 1,
+            "bugs": []
+        },
+        "aevov-cubbit-downloader": {
+            "plugin_name": "aevov-cubbit-downloader",
+            "tests_total": 8,
+            "tests_passed": 7,
+            "tests_failed": 1,
+            "bugs": []
+        },
+        "aevov-demo-system": {
+            "plugin_name": "aevov-demo-system",
+            "tests_total": 8,
+            "tests_passed": 8,
+            "tests_failed": 0,
+            "bugs": []
+        },
+        "aevov-diagnostic-network": {
+            "plugin_name": "aevov-diagnostic-network",
+            "tests_total": 8,
+            "tests_passed": 8,
+            "tests_failed": 0,
+            "bugs": []
+        },
+        "aevov-embedding-engine": {
+            "plugin_name": "aevov-embedding-engine",
+            "tests_total": 8,
+            "tests_passed": 8,
+            "tests_failed": 0,
+            "bugs": []
+        },
+        "aevov-image-engine": {
+            "plugin_name": "aevov-image-engine",
+            "tests_total": 8,
+            "tests_passed": 8,
+            "tests_failed": 0,
+            "bugs": []
+        },
+        "aevov-language-engine": {
+            "plugin_name": "aevov-language-engine",
+            "tests_total": 8,
+            "tests_passed": 8,
+            "tests_failed": 0,
+            "bugs": []
+        },
+        "aevov-language-engine-v2": {
+            "plugin_name": "aevov-language-engine-v2",
+            "tests_total": 8,
+            "tests_passed": 8,
+            "tests_failed": 0,
+            "bugs": []
+        },
+        "aevov-memory-core": {
+            "plugin_name": "aevov-memory-core",
+            "tests_total": 8,
+            "tests_passed": 8,
+            "tests_failed": 0,
+            "bugs": []
+        },
+        "aevov-music-forge": {
+            "plugin_name": "aevov-music-forge",
+            "tests_total": 8,
+            "tests_passed": 8,
+            "tests_failed": 0,
+            "bugs": []
+        },
+        "aevov-neuro-architect": {
+            "plugin_name": "aevov-neuro-architect",
+            "tests_total": 8,
+            "tests_passed": 8,
+            "tests_failed": 0,
+            "bugs": []
+        },
+        "aevov-onboarding-system": {
+            "plugin_name": "aevov-onboarding-system",
+            "tests_total": 8,
+            "tests_passed": 8,
+            "tests_failed": 0,
+            "bugs": []
+        },
+        "aevov-physics-engine": {
+            "plugin_name": "aevov-physics-engine",
+            "tests_total": 8,
+            "tests_passed": 8,
+            "tests_failed": 0,
+            "bugs": []
+        },
+        "aevov-playground": {
+            "plugin_name": "aevov-playground",
+            "tests_total": 8,
+            "tests_passed": 7,
+            "tests_failed": 1,
+            "bugs": []
+        },
+        "aevov-reasoning-engine": {
+            "plugin_name": "aevov-reasoning-engine",
+            "tests_total": 8,
+            "tests_passed": 7,
+            "tests_failed": 1,
+            "bugs": []
+        },
+        "aevov-security": {
+            "plugin_name": "aevov-security",
+            "tests_total": 8,
+            "tests_passed": 8,
+            "tests_failed": 0,
+            "bugs": []
+        },
+        "aevov-simulation-engine": {
+            "plugin_name": "aevov-simulation-engine",
+            "tests_total": 8,
+            "tests_passed": 8,
+            "tests_failed": 0,
+            "bugs": []
+        },
+        "aevov-stream": {
+            "plugin_name": "aevov-stream",
+            "tests_total": 8,
+            "tests_passed": 8,
+            "tests_failed": 0,
+            "bugs": []
+        },
+        "aevov-super-app-forge": {
+            "plugin_name": "aevov-super-app-forge",
+            "tests_total": 8,
+            "tests_passed": 8,
+            "tests_failed": 0,
+            "bugs": []
+        },
+        "aevov-transcription-engine": {
+            "plugin_name": "aevov-transcription-engine",
+            "tests_total": 8,
+            "tests_passed": 8,
+            "tests_failed": 0,
+            "bugs": []
+        },
+        "bloom-chunk-scanner": {
+            "plugin_name": "bloom-chunk-scanner",
+            "tests_total": 8,
+            "tests_passed": 7,
+            "tests_failed": 1,
+            "bugs": []
+        }
+    },
+    "bugs": []
+}

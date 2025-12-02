@@ -1,0 +1,408 @@
+/**
+ * Aevov AI Core Admin Styles
+ *
+ * @package AevovAICore
+ */
+
+/* Dashboard Grid */
+.aevov-dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+/* Cards */
+.aevov-card {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.aevov-card h2 {
+    margin-top: 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+/* Status Badges */
+.aevov-status {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.aevov-status-active {
+    background: #d4edda;
+    color: #155724;
+}
+
+.aevov-status-inactive {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+/* Statistics */
+.aevov-status-grid,
+.aevov-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    margin: 15px 0;
+}
+
+.aevov-stat {
+    text-align: center;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 4px;
+}
+
+.aevov-stat-label {
+    display: block;
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.aevov-stat-value {
+    display: block;
+    font-size: 28px;
+    font-weight: bold;
+    color: #2271b1;
+}
+
+/* Tables */
+.aevov-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 15px 0;
+}
+
+.aevov-table th,
+.aevov-table td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.aevov-table th {
+    font-weight: 600;
+    background: #f8f9fa;
+}
+
+.aevov-table tr:hover {
+    background: #f8f9fa;
+}
+
+/* Provider Sections */
+.aevov-provider-section {
+    margin: 30px 0;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 4px;
+}
+
+.aevov-provider-section h3 {
+    margin-top: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.aevov-model-list {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0;
+}
+
+.aevov-model-list li {
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.aevov-model-list li:last-child {
+    border-bottom: none;
+}
+
+/* Fallback Chain */
+#aevov-fallback-chain {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.aevov-fallback-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.aevov-fallback-order {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    background: #2271b1;
+    color: #fff;
+    border-radius: 50%;
+    font-weight: bold;
+}
+
+/* Activity List */
+.aevov-activity-list {
+    list-style: none;
+    padding: 0;
+    margin: 15px 0;
+}
+
+.aevov-activity-list li {
+    padding: 10px;
+    margin: 5px 0;
+    background: #f8f9fa;
+    border-left: 3px solid #2271b1;
+}
+
+.aevov-activity-time {
+    font-size: 11px;
+    color: #666;
+    margin-right: 10px;
+}
+
+.aevov-activity-component {
+    font-weight: 600;
+    color: #2271b1;
+    margin-right: 10px;
+}
+
+/* Quick Actions */
+.aevov-quick-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+/* Modals */
+.aevov-modal {
+    position: fixed;
+    z-index: 999999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+}
+
+.aevov-modal-content {
+    position: relative;
+    background: #fff;
+    margin: 5% auto;
+    padding: 30px;
+    width: 80%;
+    max-width: 600px;
+    border-radius: 4px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.aevov-modal-close {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    font-size: 28px;
+    font-weight: bold;
+    color: #aaa;
+    cursor: pointer;
+}
+
+.aevov-modal-close:hover {
+    color: #000;
+}
+
+/* Debug Dashboard */
+.aevov-info-table {
+    width: 100%;
+}
+
+.aevov-info-table th {
+    text-align: right;
+    padding-right: 15px;
+    font-weight: 600;
+    width: 40%;
+}
+
+.aevov-info-table td {
+    padding: 8px 0;
+}
+
+.aevov-error-summary {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin: 15px 0;
+}
+
+.aevov-error-stat {
+    flex: 1;
+    min-width: 100px;
+    padding: 15px;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.aevov-error-debug {
+    background: #e3f2fd;
+    border-left: 4px solid #2196f3;
+}
+
+.aevov-error-info {
+    background: #e8f5e9;
+    border-left: 4px solid #4caf50;
+}
+
+.aevov-error-warning {
+    background: #fff3e0;
+    border-left: 4px solid #ff9800;
+}
+
+.aevov-error-error {
+    background: #ffebee;
+    border-left: 4px solid #f44336;
+}
+
+.aevov-error-critical {
+    background: #fce4ec;
+    border-left: 4px solid #e91e63;
+}
+
+.aevov-error-level {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.aevov-error-count {
+    display: block;
+    font-size: 32px;
+    font-weight: bold;
+}
+
+/* Log Filters */
+.aevov-log-filters {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    margin: 15px 0;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 4px;
+}
+
+.aevov-log-filters label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+}
+
+/* Logs Table */
+.aevov-logs-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.aevov-logs-table th,
+.aevov-logs-table td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.aevov-logs-table th {
+    background: #f8f9fa;
+    font-weight: 600;
+}
+
+.aevov-log-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.aevov-log-debug .aevov-log-badge {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.aevov-log-info .aevov-log-badge {
+    background: #e8f5e9;
+    color: #388e3c;
+}
+
+.aevov-log-warning .aevov-log-badge {
+    background: #fff3e0;
+    color: #f57c00;
+}
+
+.aevov-log-error .aevov-log-badge {
+    background: #ffebee;
+    color: #d32f2f;
+}
+
+.aevov-log-critical .aevov-log-badge {
+    background: #fce4ec;
+    color: #c2185b;
+}
+
+/* Profile List */
+.aevov-profile-list {
+    list-style: none;
+    padding: 0;
+    margin: 15px 0;
+}
+
+.aevov-profile-list li {
+    padding: 10px;
+    margin: 5px 0;
+    background: #f8f9fa;
+    border-left: 3px solid #2271b1;
+}
+
+/* Context Modal */
+#aevov-context-data {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 4px;
+    overflow-x: auto;
+    font-family: monospace;
+    font-size: 12px;
+}
+
+/* Responsive */
+@media (max-width: 782px) {
+    .aevov-dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .aevov-status-grid,
+    .aevov-stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .aevov-quick-actions {
+        flex-direction: column;
+    }
+
+    .aevov-quick-actions .button {
+        width: 100%;
+    }
+}

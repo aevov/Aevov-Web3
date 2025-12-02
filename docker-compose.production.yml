@@ -1,0 +1,455 @@
+version: '3.8'
+
+# ============================================================================
+# Aevov Production Environment with serversideup/docker-php
+# ============================================================================
+# Production-ready Docker setup using optimized serversideup/docker-php images
+# for comprehensive testing of all 34 Aevov plugins
+#
+# Key Features:
+#   - Security-focused (unprivileged user)
+#   - Production-ready defaults
+#   - Comprehensive PHP extensions
+#   - Health checks for all services
+#   - Redis caching
+#   - MySQL 8.0 optimization
+#   - Automated testing capabilities
+#
+# Usage:
+#   docker-compose -f docker-compose.production.yml up -d
+#   docker-compose -f docker-compose.production.yml exec wordpress bash
+#   docker-compose -f docker-compose.production.yml run tests
+#
+# Access URLs:
+#   - WordPress: http://localhost:8080
+#   - phpMyAdmin: http://localhost:8081
+#   - Admin: http://localhost:8080/wp-admin (admin/admin)
+# ============================================================================
+
+services:
+  # ==========================================================================
+  # MySQL 8.0 - Optimized for Production
+  # ==========================================================================
+  mysql:
+    image: mysql:8.0
+    container_name: aevov-prod-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpassword}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-wordpress}
+      MYSQL_USER: ${MYSQL_USER:-wordpress}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-wordpress}
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./docker/mysql-init:/docker-entrypoint-initdb.d:ro
+    ports:
+      - "${MYSQL_PORT:-3306}:3306"
+    networks:
+      - aevov-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-rootpassword}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    command: >
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --max_connections=1000
+      --innodb_buffer_pool_size=1G
+      --innodb_log_file_size=256M
+      --innodb_flush_log_at_trx_commit=2
+      --innodb_flush_method=O_DIRECT
+      --query_cache_size=0
+      --query_cache_type=0
+      --slow_query_log=1
+      --long_query_time=2
+
+  # ==========================================================================
+  # Redis - High Performance Cache
+  # ==========================================================================
+  redis:
+    image: redis:7-alpine
+    container_name: aevov-prod-redis
+    restart: unless-stopped
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - aevov-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    command: >
+      redis-server
+      --appendonly yes
+      --maxmemory 512mb
+      --maxmemory-policy allkeys-lru
+      --save 900 1
+      --save 300 10
+      --save 60 10000
+
+  # ==========================================================================
+  # WordPress with serversideup/docker-php (FPM + NGINX)
+  # ==========================================================================
+  wordpress:
+    image: serversideup/php:8.2-fpm-nginx
+    container_name: aevov-prod-wordpress
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      # SSL/TLS (set to "on" for production with proper certificates)
+      SSL_MODE: "off"
+
+      # PHP Settings (production optimized)
+      PHP_MEMORY_LIMIT: "512M"
+      PHP_MAX_EXECUTION_TIME: "300"
+      PHP_UPLOAD_MAX_FILESIZE: "128M"
+      PHP_POST_MAX_SIZE: "128M"
+      PHP_MAX_INPUT_VARS: "5000"
+      PHP_OPCACHE_ENABLE: "1"
+      PHP_OPCACHE_MEMORY_CONSUMPTION: "256"
+      PHP_OPCACHE_INTERNED_STRINGS_BUFFER: "16"
+      PHP_OPCACHE_MAX_ACCELERATED_FILES: "20000"
+      PHP_OPCACHE_VALIDATE_TIMESTAMPS: "0"
+      PHP_OPCACHE_REVALIDATE_FREQ: "0"
+
+      # WordPress Database Configuration
+      WORDPRESS_DB_HOST: mysql:3306
+      WORDPRESS_DB_NAME: ${MYSQL_DATABASE:-wordpress}
+      WORDPRESS_DB_USER: ${MYSQL_USER:-wordpress}
+      WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD:-wordpress}
+      WORDPRESS_TABLE_PREFIX: ${WORDPRESS_TABLE_PREFIX:-wp_}
+
+      # WordPress Debug Settings (disable in production)
+      WORDPRESS_DEBUG: ${WORDPRESS_DEBUG:-false}
+      WORDPRESS_DEBUG_LOG: ${WORDPRESS_DEBUG_LOG:-true}
+      WORDPRESS_DEBUG_DISPLAY: ${WORDPRESS_DEBUG_DISPLAY:-false}
+      WP_DISABLE_FATAL_ERROR_HANDLER: "false"
+
+      # Redis Configuration
+      WP_REDIS_HOST: redis
+      WP_REDIS_PORT: 6379
+      WP_REDIS_DATABASE: 0
+      WP_CACHE_KEY_SALT: "aevov_prod"
+
+      # Security Headers
+      SECURITY_HEADERS_ENABLED: "true"
+
+      # Application User (serversideup/docker-php runs as www-data)
+      PUID: "33"
+      PGID: "33"
+
+    volumes:
+      # Core WordPress installation (managed by container)
+      - wordpress_data:/var/www/html
+
+      # Mount all Aevov plugins (read-only for security)
+      - ./aevov-core:/var/www/html/wp-content/plugins/aevov-core:ro
+      - ./aevov-application-forge:/var/www/html/wp-content/plugins/aevov-application-forge:ro
+      - ./aevov-chat-ui:/var/www/html/wp-content/plugins/aevov-chat-ui:ro
+      - ./aevov-chunk-registry:/var/www/html/wp-content/plugins/aevov-chunk-registry:ro
+      - ./aevov-cognitive-engine:/var/www/html/wp-content/plugins/aevov-cognitive-engine:ro
+      - ./aevov-cubbit-cdn:/var/www/html/wp-content/plugins/aevov-cubbit-cdn:ro
+      - ./aevov-cubbit-downloader:/var/www/html/wp-content/plugins/aevov-cubbit-downloader:ro
+      - ./aevov-demo-system:/var/www/html/wp-content/plugins/aevov-demo-system:ro
+      - ./aevov-diagnostic-network:/var/www/html/wp-content/plugins/aevov-diagnostic-network:ro
+      - ./aevov-embedding-engine:/var/www/html/wp-content/plugins/aevov-embedding-engine:ro
+      - ./aevov-image-engine:/var/www/html/wp-content/plugins/aevov-image-engine:ro
+      - ./aevov-language-engine:/var/www/html/wp-content/plugins/aevov-language-engine:ro
+      - ./aevov-language-engine-v2:/var/www/html/wp-content/plugins/aevov-language-engine-v2:ro
+      - ./aevov-memory-core:/var/www/html/wp-content/plugins/aevov-memory-core:ro
+      - ./aevov-music-forge:/var/www/html/wp-content/plugins/aevov-music-forge:ro
+      - ./aevov-neuro-architect:/var/www/html/wp-content/plugins/aevov-neuro-architect:ro
+      - ./aevov-onboarding-system:/var/www/html/wp-content/plugins/aevov-onboarding-system:ro
+      - ./aevov-physics-engine:/var/www/html/wp-content/plugins/aevov-physics-engine:ro
+      - ./aevov-playground:/var/www/html/wp-content/plugins/aevov-playground:ro
+      - ./aevov-reasoning-engine:/var/www/html/wp-content/plugins/aevov-reasoning-engine:ro
+      - ./aevov-security:/var/www/html/wp-content/plugins/aevov-security:ro
+      - ./aevov-simulation-engine:/var/www/html/wp-content/plugins/aevov-simulation-engine:ro
+      - ./aevov-stream:/var/www/html/wp-content/plugins/aevov-stream:ro
+      - ./aevov-super-app-forge:/var/www/html/wp-content/plugins/aevov-super-app-forge:ro
+      - ./aevov-testing-framework:/var/www/html/wp-content/plugins/aevov-testing-framework:ro
+      - ./aevov-transcription-engine:/var/www/html/wp-content/plugins/aevov-transcription-engine:ro
+      - ./aevov-unified-dashboard:/var/www/html/wp-content/plugins/aevov-unified-dashboard:ro
+      - ./aevov-vision-depth:/var/www/html/wp-content/plugins/aevov-vision-depth:ro
+      - ./aps-tools:/var/www/html/wp-content/plugins/aps-tools:ro
+      - ./bloom-chunk-scanner:/var/www/html/wp-content/plugins/bloom-chunk-scanner:ro
+      - ./bloom-pattern-recognition:/var/www/html/wp-content/plugins/bloom-pattern-recognition:ro
+      - ./AevovPatternSyncProtocol:/var/www/html/wp-content/plugins/AevovPatternSyncProtocol:ro
+      - ./AROS:/var/www/html/wp-content/plugins/AROS:ro
+      - ./aevov-workflow-engine:/var/www/html/wp-content/plugins/aevov-workflow-engine:ro
+
+      # Mount testing framework (writable for test reports)
+      - ./testing:/var/www/html/wp-content/testing
+
+      # Custom configuration
+      - ./docker/php-production.ini:/usr/local/etc/php/conf.d/custom.ini:ro
+      - ./docker/nginx-site.conf:/etc/nginx/site-opts.d/aevov.conf:ro
+
+    ports:
+      - "${WORDPRESS_PORT:-8080}:8080"
+      - "${WORDPRESS_SSL_PORT:-8443}:8443"
+    networks:
+      - aevov-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    labels:
+      - "com.aevov.service=wordpress"
+      - "com.aevov.environment=production"
+
+  # ==========================================================================
+  # Aevov Workflow Engine (Standalone Next.js UI)
+  # ==========================================================================
+  workflow-engine:
+    build:
+      context: ./aevov-workflow-engine
+      dockerfile: Dockerfile.standalone
+      target: production
+    container_name: aevov-prod-workflow-engine
+    restart: unless-stopped
+    depends_on:
+      wordpress:
+        condition: service_healthy
+    environment:
+      NEXT_PUBLIC_API_URL: http://wordpress:8080/wp-json/aevov-workflow/v1
+      NODE_ENV: production
+    ports:
+      - "${WORKFLOW_ENGINE_PORT:-3000}:3000"
+    networks:
+      - aevov-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    labels:
+      - "com.aevov.service=workflow-engine"
+      - "com.aevov.environment=production"
+
+  # ==========================================================================
+  # phpMyAdmin - Database Management (disable in production)
+  # ==========================================================================
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: aevov-prod-phpmyadmin
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpassword}
+      UPLOAD_LIMIT: 128M
+      MEMORY_LIMIT: 512M
+      MAX_EXECUTION_TIME: 300
+    ports:
+      - "${PHPMYADMIN_PORT:-8081}:80"
+    networks:
+      - aevov-network
+    profiles:
+      - tools
+
+  # ==========================================================================
+  # Testing Runner - Automated Test Execution
+  # ==========================================================================
+  tests:
+    image: serversideup/php:8.2-cli
+    container_name: aevov-prod-tests
+    depends_on:
+      wordpress:
+        condition: service_healthy
+    environment:
+      WORDPRESS_DB_HOST: mysql:3306
+      WORDPRESS_DB_NAME: ${MYSQL_DATABASE:-wordpress}
+      WORDPRESS_DB_USER: ${MYSQL_USER:-wordpress}
+      WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD:-wordpress}
+      PHP_MEMORY_LIMIT: "1G"
+      PHP_MAX_EXECUTION_TIME: "3600"
+    volumes:
+      - wordpress_data:/var/www/html:ro
+      - ./testing:/workspace/testing
+      - ./reports:/workspace/reports
+      - ./composer.json:/workspace/composer.json:ro
+      - ./phpunit.xml:/workspace/phpunit.xml:ro
+    working_dir: /workspace
+    networks:
+      - aevov-network
+    command: >
+      sh -c "
+        echo 'Installing dependencies...' &&
+        composer install --no-interaction --prefer-dist &&
+        echo 'Running PHPUnit tests...' &&
+        vendor/bin/phpunit --configuration phpunit.xml --coverage-html reports/coverage &&
+        echo 'Running workflow tests...' &&
+        php testing/workflow-test-runner.php --report-format=html --output=reports/workflow.html &&
+        echo 'All tests completed!' &&
+        ls -lah reports/
+      "
+    profiles:
+      - testing
+
+  # ==========================================================================
+  # Code Quality Checker
+  # ==========================================================================
+  quality:
+    image: serversideup/php:8.2-cli
+    container_name: aevov-prod-quality
+    environment:
+      PHP_MEMORY_LIMIT: "512M"
+    volumes:
+      - ./:/workspace
+      - ./reports:/workspace/reports
+    working_dir: /workspace
+    networks:
+      - aevov-network
+    command: >
+      sh -c "
+        echo 'Installing dependencies...' &&
+        composer install --no-interaction --prefer-dist &&
+        echo 'Running PHPCS...' &&
+        vendor/bin/phpcs --report=full --report-file=reports/phpcs.txt &&
+        echo 'Running PHPStan...' &&
+        vendor/bin/phpstan analyse --memory-limit=512M --error-format=table > reports/phpstan.txt &&
+        echo 'Code quality checks completed!' &&
+        cat reports/phpcs.txt &&
+        cat reports/phpstan.txt
+      "
+    profiles:
+      - quality
+
+  # ==========================================================================
+  # WP-CLI Container (for WordPress management)
+  # ==========================================================================
+  wpcli:
+    image: serversideup/php:8.2-cli
+    container_name: aevov-prod-wpcli
+    depends_on:
+      wordpress:
+        condition: service_healthy
+    environment:
+      WORDPRESS_DB_HOST: mysql:3306
+      WORDPRESS_DB_NAME: ${MYSQL_DATABASE:-wordpress}
+      WORDPRESS_DB_USER: ${MYSQL_USER:-wordpress}
+      WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD:-wordpress}
+    volumes:
+      - wordpress_data:/var/www/html
+      - ./:/workspace
+    working_dir: /var/www/html
+    networks:
+      - aevov-network
+    entrypoint: /bin/bash
+    command: >
+      -c "
+        # Install WP-CLI
+        curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar &&
+        chmod +x wp-cli.phar &&
+        mv wp-cli.phar /usr/local/bin/wp &&
+
+        # Install WordPress if not already installed
+        if ! wp core is-installed --allow-root 2>/dev/null; then
+          echo 'Installing WordPress...'
+          wp core download --allow-root || true
+          wp core install \
+            --url='http://localhost:8080' \
+            --title='Aevov Production Testing' \
+            --admin_user='admin' \
+            --admin_password='admin' \
+            --admin_email='admin@aevov.local' \
+            --skip-email \
+            --allow-root
+          echo 'WordPress installed!'
+        fi
+
+        # Activate plugins in correct order
+        echo 'Activating Aevov plugins...'
+        wp plugin activate bloom-pattern-recognition --allow-root 2>/dev/null || true
+        wp plugin activate AevovPatternSyncProtocol --allow-root 2>/dev/null || true
+        wp plugin activate aps-tools --allow-root 2>/dev/null || true
+
+        # Activate all other Aevov plugins
+        for plugin in aevov-*; do
+          wp plugin activate \$plugin --allow-root 2>/dev/null || true
+        done
+
+        echo 'Setup complete! Keeping container running...'
+        sleep infinity
+      "
+    profiles:
+      - tools
+
+  # ==========================================================================
+  # Monitoring & Metrics (optional)
+  # ==========================================================================
+  monitoring:
+    image: serversideup/php:8.2-cli
+    container_name: aevov-prod-monitoring
+    depends_on:
+      wordpress:
+        condition: service_healthy
+    environment:
+      WORDPRESS_URL: "http://wordpress:8080"
+      MYSQL_HOST: mysql
+      REDIS_HOST: redis
+    volumes:
+      - ./.monitoring:/workspace/monitoring:ro
+      - ./reports:/workspace/reports
+    working_dir: /workspace
+    networks:
+      - aevov-network
+    command: >
+      sh -c "
+        echo 'Starting health monitoring...'
+        while true; do
+          php monitoring/health-check.php > reports/health-$(date +%Y%m%d-%H%M%S).json
+          sleep 300
+        done
+      "
+    profiles:
+      - monitoring
+
+# ============================================================================
+# Volumes
+# ============================================================================
+volumes:
+  mysql_data:
+    driver: local
+    labels:
+      - "com.aevov.volume=mysql"
+
+  redis_data:
+    driver: local
+    labels:
+      - "com.aevov.volume=redis"
+
+  wordpress_data:
+    driver: local
+    labels:
+      - "com.aevov.volume=wordpress"
+
+# ============================================================================
+# Networks
+# ============================================================================
+networks:
+  aevov-network:
+    driver: bridge
+    labels:
+      - "com.aevov.network=main"

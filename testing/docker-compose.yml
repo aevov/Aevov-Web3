@@ -1,0 +1,144 @@
+version: '3.8'
+
+services:
+  wordpress:
+    image: wordpress:php8.1-fpm-alpine
+    container_name: aevov_wordpress
+    environment:
+      WORDPRESS_DB_HOST: mysql
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress_password
+      WORDPRESS_DB_NAME: wordpress_db
+      # Enable multisite
+      WORDPRESS_CONFIG_EXTRA: |
+        define('WP_ALLOW_MULTISITE', true);
+        define('MULTISITE', true);
+        define('SUBDOMAIN_INSTALL', false);
+        define('DOMAIN_CURRENT_SITE', 'localhost');
+        define('PATH_CURRENT_SITE', '/');
+        define('SITE_ID_CURRENT_SITE', 1);
+        define('BLOG_ID_CURRENT_SITE', 1);
+    volumes:
+      - ./wordpress:/var/www/html
+      # Mount all Aevov plugins
+      - ../aevov-application-forge:/var/www/html/wp-content/plugins/aevov-application-forge
+      - ../aevov-chunk-registry:/var/www/html/wp-content/plugins/aevov-chunk-registry
+      - ../aevov-cognitive-engine:/var/www/html/wp-content/plugins/aevov-cognitive-engine
+      - ../aevov-core:/var/www/html/wp-content/plugins/aevov-core
+      - ../aevov-cubbit-cdn:/var/www/html/wp-content/plugins/aevov-cubbit-cdn
+      - ../aevov-cubbit-downloader:/var/www/html/wp-content/plugins/aevov-cubbit-downloader
+      - ../aevov-demo-system:/var/www/html/wp-content/plugins/aevov-demo-system
+      - ../aevov-diagnostic-network:/var/www/html/wp-content/plugins/aevov-diagnostic-network
+      - ../aevov-embedding-engine:/var/www/html/wp-content/plugins/aevov-embedding-engine
+      - ../aevov-image-engine:/var/www/html/wp-content/plugins/aevov-image-engine
+      - ../aevov-language-engine:/var/www/html/wp-content/plugins/aevov-language-engine
+      - ../aevov-language-engine-v2:/var/www/html/wp-content/plugins/aevov-language-engine-v2
+      - ../aevov-memory-core:/var/www/html/wp-content/plugins/aevov-memory-core
+      - ../aevov-music-forge:/var/www/html/wp-content/plugins/aevov-music-forge
+      - ../aevov-neuro-architect:/var/www/html/wp-content/plugins/aevov-neuro-architect
+      - ../aevov-onboarding-system:/var/www/html/wp-content/plugins/aevov-onboarding-system
+      - ../aevov-playground:/var/www/html/wp-content/plugins/aevov-playground
+      - ../aevov-reasoning-engine:/var/www/html/wp-content/plugins/aevov-reasoning-engine
+      - ../aevov-simulation-engine:/var/www/html/wp-content/plugins/aevov-simulation-engine
+      - ../aevov-stream:/var/www/html/wp-content/plugins/aevov-stream
+      - ../aevov-super-app-forge:/var/www/html/wp-content/plugins/aevov-super-app-forge
+      - ../aevov-transcription-engine:/var/www/html/wp-content/plugins/aevov-transcription-engine
+      # New plugins
+      - ../aevov-security:/var/www/html/wp-content/plugins/aevov-security
+      - ../aevov-physics-engine:/var/www/html/wp-content/plugins/aevov-physics-engine
+      - ../AROS:/var/www/html/wp-content/plugins/AROS
+      # Existing plugins
+      - ../AevovPatternSyncProtocol:/var/www/html/wp-content/plugins/AevovPatternSyncProtocol
+      - ../aps-tools:/var/www/html/wp-content/plugins/aps-tools
+      - ../bloom-chunk-scanner:/var/www/html/wp-content/plugins/bloom-chunk-scanner
+      - ../bloom-pattern-recognition:/var/www/html/wp-content/plugins/bloom-pattern-recognition
+    depends_on:
+      - mysql
+    networks:
+      - aevov_network
+
+  nginx:
+    image: nginx:latest
+    container_name: aevov_nginx
+    ports:
+      - "8081:80"
+    volumes:
+      - ./wordpress:/var/www/html:ro
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - wordpress
+    networks:
+      - aevov_network
+
+  mysql:
+    image: mysql:8.0
+    container_name: aevov_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: wordpress_db
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress_password
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - aevov_network
+    command: --default-authentication-plugin=mysql_native_password
+
+  # PHPUnit test runner with all dependencies
+  phpunit:
+    build:
+      context: .
+      dockerfile: Dockerfile.phpunit
+    container_name: aevov_phpunit
+    environment:
+      DB_HOST: mysql
+      DB_NAME: wordpress_test
+      DB_USER: wordpress
+      DB_PASSWORD: wordpress_password
+      WP_TESTS_DIR: /app/wordpress-tests-lib
+      WP_CORE_DIR: /app/wordpress
+    volumes:
+      - ./wordpress:/app/wordpress
+      - ./wordpress-tests-lib:/app/wordpress-tests-lib
+      - ./tests:/app/tests
+      - .:/app/aevov-testing-framework
+      # Mount all plugins for testing
+      - ../aevov-application-forge:/app/wordpress/wp-content/plugins/aevov-application-forge
+      - ../aevov-chunk-registry:/app/wordpress/wp-content/plugins/aevov-chunk-registry
+      - ../aevov-cognitive-engine:/app/wordpress/wp-content/plugins/aevov-cognitive-engine
+      - ../aevov-core:/app/wordpress/wp-content/plugins/aevov-core
+      - ../aevov-embedding-engine:/app/wordpress/wp-content/plugins/aevov-embedding-engine
+      - ../aevov-image-engine:/app/wordpress/wp-content/plugins/aevov-image-engine
+      - ../aevov-language-engine:/app/wordpress/wp-content/plugins/aevov-language-engine
+      - ../aevov-language-engine-v2:/app/wordpress/wp-content/plugins/aevov-language-engine-v2
+      - ../aevov-memory-core:/app/wordpress/wp-content/plugins/aevov-memory-core
+      - ../aevov-music-forge:/app/wordpress/wp-content/plugins/aevov-music-forge
+      - ../aevov-neuro-architect:/app/wordpress/wp-content/plugins/aevov-neuro-architect
+      - ../aevov-playground:/app/wordpress/wp-content/plugins/aevov-playground
+      - ../aevov-reasoning-engine:/app/wordpress/wp-content/plugins/aevov-reasoning-engine
+      - ../aevov-simulation-engine:/app/wordpress/wp-content/plugins/aevov-simulation-engine
+      - ../aevov-stream:/app/wordpress/wp-content/plugins/aevov-stream
+      - ../aevov-super-app-forge:/app/wordpress/wp-content/plugins/aevov-super-app-forge
+      - ../aevov-transcription-engine:/app/wordpress/wp-content/plugins/aevov-transcription-engine
+      - ../aevov-security:/app/wordpress/wp-content/plugins/aevov-security
+      - ../aevov-physics-engine:/app/wordpress/wp-content/plugins/aevov-physics-engine
+      - ../AROS:/app/wordpress/wp-content/plugins/AROS
+      - ../AevovPatternSyncProtocol:/app/wordpress/wp-content/plugins/AevovPatternSyncProtocol
+      - ../aps-tools:/app/wordpress/wp-content/plugins/aps-tools
+      - ../bloom-pattern-recognition:/app/wordpress/wp-content/plugins/bloom-pattern-recognition
+    working_dir: /app/aevov-testing-framework
+    depends_on:
+      - mysql
+    networks:
+      - aevov_network
+    command: tail -f /dev/null
+
+networks:
+  aevov_network:
+    driver: bridge
+
+volumes:
+  mysql_data:
+    driver: local

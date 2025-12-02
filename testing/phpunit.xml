@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
+         bootstrap="tests/bootstrap.php"
+         colors="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         processIsolation="false"
+         stopOnFailure="false">
+    <testsuites>
+        <testsuite name="Aevov Plugin Tests">
+            <directory suffix="Test.php">./tests</directory>
+        </testsuite>
+        <testsuite name="AevovIntegration">
+            <file>./tests/AevovIntegrationTest.php</file>
+            <file>./tests/AevovDemoSystemTest.php</file>
+            <file>./tests/ChunkWorkflowTest.php</file>
+        </testsuite>
+        <testsuite name="PhysicsEngine">
+            <file>./tests/PhysicsEngine/PhysicsEngineTest.php</file>
+            <file>./tests/PhysicsEngine/PhysicsAPITest.php</file>
+        </testsuite>
+        <testsuite name="Security">
+            <file>./tests/Security/SecurityTest.php</file>
+        </testsuite>
+        <testsuite name="MediaEngines">
+            <file>./tests/MediaEngines/MediaEnginesTest.php</file>
+        </testsuite>
+        <testsuite name="AIML">
+            <file>./tests/AIML/NeuroArchitectTest.php</file>
+            <file>./tests/AIML/CognitiveEngineTest.php</file>
+            <file>./tests/AIML/LanguageEngineTest.php</file>
+        </testsuite>
+        <testsuite name="Infrastructure">
+            <file>./tests/Infrastructure/AevovInfrastructureTest.php</file>
+        </testsuite>
+        <testsuite name="Applications">
+            <file>./tests/Applications/ApplicationsIntegrationTest.php</file>
+        </testsuite>
+        <testsuite name="Performance">
+            <file>./tests/Performance/PerformanceBenchmarks.php</file>
+        </testsuite>
+    </testsuites>
+    <php>
+        <const name="WP_TESTS_DIR" value="/home/user/Aevov1/aevov-testing-framework/wordpress-tests-lib"/>
+        <const name="WP_TESTS_MULTISITE" value="1"/>
+        <const name="AEVOV_TESTING_MODE" value="1"/>
+    </php>
+</phpunit>

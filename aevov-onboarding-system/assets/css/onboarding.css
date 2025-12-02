@@ -1,0 +1,329 @@
+/**
+ * Aevov Onboarding System Styles
+ * Enhanced styling for the onboarding interface
+ */
+
+/* Notification System */
+.aevov-notification {
+    position: fixed;
+    top: 32px;
+    right: 20px;
+    z-index: 999999;
+    padding: 15px 20px;
+    border-radius: 6px;
+    font-weight: 500;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    max-width: 400px;
+    word-wrap: break-word;
+}
+
+.aevov-notification-loading {
+    background: #2196F3;
+    color: white;
+    border-left: 4px solid #1976D2;
+}
+
+.aevov-notification-success {
+    background: #4CAF50;
+    color: white;
+    border-left: 4px solid #388E3C;
+}
+
+.aevov-notification-error {
+    background: #f44336;
+    color: white;
+    border-left: 4px solid #d32f2f;
+}
+
+/* Loading States */
+.loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    font-style: italic;
+    color: #666;
+}
+
+.loading:before {
+    content: "";
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-right: 10px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Enhanced Button States */
+.btn-primary:disabled,
+.btn-success:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.btn-primary.processing,
+.btn-success.processing {
+    position: relative;
+    color: transparent;
+}
+
+.btn-primary.processing:after,
+.btn-success.processing:after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 16px;
+    height: 16px;
+    margin: -8px 0 0 -8px;
+    border: 2px solid transparent;
+    border-top: 2px solid #fff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* Step Card Enhancements */
+.step-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.step-card.processing {
+    pointer-events: none;
+}
+
+.step-card.processing:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255,255,255,0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.step-card.processing:before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 30px;
+    height: 30px;
+    margin: -15px 0 0 -15px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    z-index: 1;
+}
+
+/* Status Card Animations */
+.status-card {
+    transition: all 0.3s ease;
+}
+
+.status-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+/* Form Enhancements */
+.form-table th {
+    font-weight: 600;
+    color: #333;
+}
+
+.form-table input[type="text"],
+.form-table input[type="number"],
+.form-table select,
+.form-table textarea {
+    border: 2px solid #e1e5e9;
+    border-radius: 4px;
+    padding: 8px 12px;
+    transition: border-color 0.3s ease;
+}
+
+.form-table input[type="text"]:focus,
+.form-table input[type="number"]:focus,
+.form-table select:focus,
+.form-table textarea:focus {
+    border-color: #667eea;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* Progress Bar Enhancements */
+.progress-bar {
+    position: relative;
+    overflow: hidden;
+}
+
+.progress-fill {
+    position: relative;
+}
+
+.progress-fill:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-image: linear-gradient(
+        -45deg,
+        rgba(255, 255, 255, .2) 25%,
+        transparent 25%,
+        transparent 50%,
+        rgba(255, 255, 255, .2) 50%,
+        rgba(255, 255, 255, .2) 75%,
+        transparent 75%,
+        transparent
+    );
+    background-size: 50px 50px;
+    animation: move 2s linear infinite;
+}
+
+@keyframes move {
+    0% {
+        background-position: 0 0;
+    }
+    100% {
+        background-position: 50px 50px;
+    }
+}
+
+/* Architecture Diagram Enhancements */
+.architecture-diagram svg {
+    border: 1px solid #e1e5e9;
+    border-radius: 8px;
+    background: white;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .aevov-onboarding-container {
+        margin: 10px;
+        padding: 15px;
+    }
+    
+    .aevov-header h1 {
+        font-size: 2em;
+    }
+    
+    .onboarding-steps {
+        grid-template-columns: 1fr;
+    }
+    
+    .system-status-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .aevov-notification {
+        position: fixed;
+        top: 32px;
+        left: 10px;
+        right: 10px;
+        max-width: none;
+    }
+}
+
+/* Accessibility Enhancements */
+.step-card:focus,
+.btn-primary:focus,
+.btn-success:focus {
+    outline: 2px solid #667eea;
+    outline-offset: 2px;
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+    .step-card {
+        border-width: 3px;
+    }
+    
+    .btn-primary,
+    .btn-success {
+        border: 2px solid currentColor;
+    }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+    .step-card,
+    .status-card,
+    .progress-fill,
+    .loading:before,
+    .btn-primary.processing:after,
+    .btn-success.processing:after,
+    .step-card.processing:before {
+        animation: none;
+        transition: none;
+    }
+    
+    .step-card:hover,
+    .status-card:hover {
+        transform: none;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .aevov-notification,
+    .btn-primary,
+    .btn-success {
+        display: none;
+    }
+    
+    .aevov-onboarding-container {
+        box-shadow: none;
+        border: 1px solid #ccc;
+    }
+    
+    .step-card {
+        break-inside: avoid;
+    }
+}
+
+/* Dark Mode Support (if WordPress theme supports it) */
+@media (prefers-color-scheme: dark) {
+    .aevov-onboarding-container {
+        background: #1a1a1a;
+        color: #e0e0e0;
+    }
+    
+    .step-card {
+        background: #2d2d2d;
+        border-color: #404040;
+        color: #e0e0e0;
+    }
+    
+    .step-card:hover {
+        border-color: #667eea;
+    }
+    
+    .config-section {
+        background: #2d2d2d;
+        border-color: #404040;
+    }
+    
+    .form-table input[type="text"],
+    .form-table input[type="number"],
+    .form-table select,
+    .form-table textarea {
+        background: #3d3d3d;
+        border-color: #555;
+        color: #e0e0e0;
+    }
+}

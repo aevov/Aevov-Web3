@@ -1,0 +1,19 @@
+{
+    "name": "bloom/bloom-pattern-recognition",
+    "description": "Distributed pattern recognition system for BLOOM tensor chunks using WordPress Multisite",
+    "type": "wordpress-plugin",
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Your Name",
+            "email": "your.email@example.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "autoload": {
+        "psr-4": {
+            "BLOOM\\": "includes/"
+        }
+    }
+}

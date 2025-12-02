@@ -1,0 +1,302 @@
+version: '3.8'
+
+# ============================================================================
+# Aevov Development Environment - ServerSideUp Docker PHP
+# ============================================================================
+# Complete Docker setup using serversideup/docker-php images
+# Production-ready, secure, optimized for WordPress + Aevov ecosystem
+#
+# Features:
+#   - PHP 8.3 FPM + NGINX (production-ready)
+#   - Runs as unprivileged user (security-first)
+#   - Pre-configured extensions and tools
+#   - MySQL 8.0 with optimized settings
+#   - Redis caching
+#   - phpMyAdmin for database management
+#
+# Usage:
+#   docker-compose -f docker-compose.serverside.yml up -d
+#   docker-compose -f docker-compose.serverside.yml down
+#   docker-compose -f docker-compose.serverside.yml logs -f
+#
+# Access URLs:
+#   - WordPress: http://localhost:8080
+#   - phpMyAdmin: http://localhost:8082
+# ============================================================================
+
+services:
+  # ==========================================================================
+  # MySQL Database
+  # ==========================================================================
+  mysql:
+    image: mysql:8.0
+    container_name: aevov-mysql-serverside
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpassword}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-wordpress}
+      MYSQL_USER: ${MYSQL_USER:-wordpress}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-wordpress}
+    volumes:
+      - mysql_data_serverside:/var/lib/mysql
+    ports:
+      - "${MYSQL_PORT:-3307}:3306"
+    networks:
+      - aevov-serverside
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-rootpassword}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    command: >
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --max_connections=1000
+      --innodb_buffer_pool_size=512M
+      --innodb_log_file_size=128M
+      --innodb_flush_log_at_trx_commit=2
+      --innodb_flush_method=O_DIRECT
+      --query_cache_size=0
+      --query_cache_type=0
+      --slow_query_log=1
+      --slow_query_log_file=/var/log/mysql/slow.log
+      --long_query_time=2
+
+  # ==========================================================================
+  # Redis Cache
+  # ==========================================================================
+  redis:
+    image: redis:7-alpine
+    container_name: aevov-redis-serverside
+    restart: unless-stopped
+    ports:
+      - "${REDIS_PORT:-6380}:6379"
+    volumes:
+      - redis_data_serverside:/data
+    networks:
+      - aevov-serverside
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    command: >
+      redis-server
+      --appendonly yes
+      --maxmemory 256mb
+      --maxmemory-policy allkeys-lru
+      --save 60 1000
+      --tcp-backlog 511
+
+  # ==========================================================================
+  # WordPress with ServerSideUp PHP (FPM + NGINX)
+  # ==========================================================================
+  wordpress:
+    image: serversideup/php:8.3-fpm-nginx
+    container_name: aevov-wordpress-serverside
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      # ======================================================================
+      # ServerSideUp PHP Configuration
+      # ======================================================================
+      SSL_MODE: "off"
+      PHP_OPCACHE_ENABLE: "1"
+      PHP_OPCACHE_MEMORY_CONSUMPTION: "256"
+      PHP_OPCACHE_MAX_ACCELERATED_FILES: "20000"
+      PHP_OPCACHE_REVALIDATE_FREQ: "0"
+      PHP_OPCACHE_VALIDATE_TIMESTAMPS: "1"
+
+      # PHP Settings
+      PHP_MEMORY_LIMIT: "512M"
+      PHP_MAX_EXECUTION_TIME: "300"
+      PHP_UPLOAD_MAX_FILE_SIZE: "64M"
+      PHP_POST_MAX_SIZE: "64M"
+      PHP_MAX_INPUT_VARS: "5000"
+      PHP_MAX_INPUT_TIME: "300"
+
+      # Error Reporting (Development)
+      PHP_DISPLAY_ERRORS: "On"
+      PHP_DISPLAY_STARTUP_ERRORS: "On"
+      PHP_ERROR_REPORTING: "E_ALL"
+      LOG_OUTPUT_LEVEL: "debug"
+
+      # Session Settings
+      PHP_SESSION_SAVE_HANDLER: "redis"
+      PHP_SESSION_SAVE_PATH: "tcp://redis:6379"
+
+      # ======================================================================
+      # WordPress Configuration
+      # ======================================================================
+      # Database
+      WORDPRESS_DB_HOST: mysql:3306
+      WORDPRESS_DB_NAME: ${MYSQL_DATABASE:-wordpress}
+      WORDPRESS_DB_USER: ${MYSQL_USER:-wordpress}
+      WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD:-wordpress}
+      WORDPRESS_TABLE_PREFIX: ${WORDPRESS_TABLE_PREFIX:-wp_}
+
+      # Debug Settings
+      WORDPRESS_DEBUG: "true"
+      WORDPRESS_DEBUG_LOG: "true"
+      WORDPRESS_DEBUG_DISPLAY: "true"
+      WP_DISABLE_FATAL_ERROR_HANDLER: "true"
+
+      # Redis Object Cache
+      WP_REDIS_HOST: redis
+      WP_REDIS_PORT: 6379
+      WP_REDIS_DATABASE: 0
+      WP_CACHE: "true"
+
+      # WordPress URLs
+      WORDPRESS_CONFIG_EXTRA: |
+        define('WP_HOME', 'http://localhost:8080');
+        define('WP_SITEURL', 'http://localhost:8080');
+        define('WP_MEMORY_LIMIT', '512M');
+        define('WP_MAX_MEMORY_LIMIT', '512M');
+
+    volumes:
+      # WordPress Core
+      - wordpress_data_serverside:/var/www/html
+
+      # Mount all Aevov plugins for development
+      - ./aevov-core:/var/www/html/wp-content/plugins/aevov-core
+      - ./aevov-application-forge:/var/www/html/wp-content/plugins/aevov-application-forge
+      - ./aevov-chat-ui:/var/www/html/wp-content/plugins/aevov-chat-ui
+      - ./aevov-chunk-registry:/var/www/html/wp-content/plugins/aevov-chunk-registry
+      - ./aevov-cognitive-engine:/var/www/html/wp-content/plugins/aevov-cognitive-engine
+      - ./aevov-cubbit-cdn:/var/www/html/wp-content/plugins/aevov-cubbit-cdn
+      - ./aevov-cubbit-downloader:/var/www/html/wp-content/plugins/aevov-cubbit-downloader
+      - ./aevov-demo-system:/var/www/html/wp-content/plugins/aevov-demo-system
+      - ./aevov-diagnostic-network:/var/www/html/wp-content/plugins/aevov-diagnostic-network
+      - ./aevov-embedding-engine:/var/www/html/wp-content/plugins/aevov-embedding-engine
+      - ./aevov-image-engine:/var/www/html/wp-content/plugins/aevov-image-engine
+      - ./aevov-language-engine:/var/www/html/wp-content/plugins/aevov-language-engine
+      - ./aevov-language-engine-v2:/var/www/html/wp-content/plugins/aevov-language-engine-v2
+      - ./aevov-memory-core:/var/www/html/wp-content/plugins/aevov-memory-core
+      - ./aevov-music-forge:/var/www/html/wp-content/plugins/aevov-music-forge
+      - ./aevov-neuro-architect:/var/www/html/wp-content/plugins/aevov-neuro-architect
+      - ./aevov-onboarding-system:/var/www/html/wp-content/plugins/aevov-onboarding-system
+      - ./aevov-physics-engine:/var/www/html/wp-content/plugins/aevov-physics-engine
+      - ./aevov-playground:/var/www/html/wp-content/plugins/aevov-playground
+      - ./aevov-reasoning-engine:/var/www/html/wp-content/plugins/aevov-reasoning-engine
+      - ./aevov-security:/var/www/html/wp-content/plugins/aevov-security
+      - ./aevov-simulation-engine:/var/www/html/wp-content/plugins/aevov-simulation-engine
+      - ./aevov-stream:/var/www/html/wp-content/plugins/aevov-stream
+      - ./aevov-super-app-forge:/var/www/html/wp-content/plugins/aevov-super-app-forge
+      - ./aevov-testing-framework:/var/www/html/wp-content/plugins/aevov-testing-framework
+      - ./aevov-transcription-engine:/var/www/html/wp-content/plugins/aevov-transcription-engine
+      - ./aevov-unified-dashboard:/var/www/html/wp-content/plugins/aevov-unified-dashboard
+      - ./aevov-vision-depth:/var/www/html/wp-content/plugins/aevov-vision-depth
+
+      # Core plugins
+      - ./aps-tools:/var/www/html/wp-content/plugins/aps-tools
+      - ./bloom-chunk-scanner:/var/www/html/wp-content/plugins/bloom-chunk-scanner
+      - ./bloom-pattern-recognition:/var/www/html/wp-content/plugins/bloom-pattern-recognition
+      - ./AevovPatternSyncProtocol:/var/www/html/wp-content/plugins/AevovPatternSyncProtocol
+
+      # Testing framework
+      - ./testing:/var/www/html/wp-content/testing
+
+    ports:
+      - "${WORDPRESS_PORT:-8080}:8080"
+    networks:
+      - aevov-serverside
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 120s
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    labels:
+      - "traefik.enable=false"
+
+  # ==========================================================================
+  # WP-CLI Container (for running WordPress commands)
+  # ==========================================================================
+  wpcli:
+    image: wordpress:cli-php8.3
+    container_name: aevov-wpcli-serverside
+    user: "33:33"  # www-data user
+    depends_on:
+      wordpress:
+        condition: service_healthy
+      mysql:
+        condition: service_healthy
+    environment:
+      WORDPRESS_DB_HOST: mysql:3306
+      WORDPRESS_DB_NAME: ${MYSQL_DATABASE:-wordpress}
+      WORDPRESS_DB_USER: ${MYSQL_USER:-wordpress}
+      WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD:-wordpress}
+    volumes:
+      - wordpress_data_serverside:/var/www/html
+      - ./:/workspace:ro
+    networks:
+      - aevov-serverside
+    command: tail -f /dev/null
+    profiles:
+      - tools
+
+  # ==========================================================================
+  # phpMyAdmin - Database Management
+  # ==========================================================================
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: aevov-phpmyadmin-serverside
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpassword}
+      UPLOAD_LIMIT: 64M
+      MAX_EXECUTION_TIME: 300
+      MEMORY_LIMIT: 512M
+    ports:
+      - "${PHPMYADMIN_PORT:-8082}:80"
+    networks:
+      - aevov-serverside
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+# ============================================================================
+# Volumes
+# ============================================================================
+volumes:
+  mysql_data_serverside:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${PWD}/.docker-data/mysql
+  redis_data_serverside:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${PWD}/.docker-data/redis
+  wordpress_data_serverside:
+    driver: local
+
+# ============================================================================
+# Networks
+# ============================================================================
+networks:
+  aevov-serverside:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16

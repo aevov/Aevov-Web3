@@ -1,0 +1,45 @@
+/.fuse_hidden000000ef00000001
+/.kilocodemodes
+# Ignore specific WordPress database file types
+db_data/wordpress_db/*.ibd
+db_data/wordpress_db/*.frm
+db_data/wordpress_db/*.MYD
+db_data/wordpress_db/*.MYI
+db_data/wordpress_db/*.sdi
+db_data/wordpress_db/mysql/
+db_data/wordpress_db/performance_schema/
+db_data/wordpress_db/sys/
+
+# Sensitive config files - NEVER commit credentials
+# Only .example versions should be committed
+.env
+.env.production
+.env.production.local
+.env.staging
+.env.local
+.env.serverside
+.env.*.local
+docker/mysql.env
+docker/wordpress.env
+config/database.php
+.security-backups-*/
+
+# Private keys and certificates
+*.pem
+*.key
+*.p12
+*.pfx
+!*.example
+
+# Third-party libraries and external dependencies
+aevov-vision-depth/lib/
+
+# Testing database files
+testing/db_data/
+aevov-testing-framework/db_data/
+
+# Docker volumes and WordPress test installations
+testing/wordpress/
+testing/wordpress-develop/
+testing/wordpress-tests-lib/vendor/
+testing/vendor/

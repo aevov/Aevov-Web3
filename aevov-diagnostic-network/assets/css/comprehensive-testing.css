@@ -1,0 +1,578 @@
+/**
+ * Aevov Diagnostic Network - Comprehensive Testing Styles
+ * Visual indicators and interface for comprehensive feature testing
+ */
+
+/* Main Testing Container */
+.adn-testing-container {
+    position: fixed;
+    top: 32px;
+    left: 160px;
+    right: 0;
+    bottom: 0;
+    background: #f1f1f1;
+    z-index: 999999;
+    display: flex;
+    flex-direction: column;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.adn-testing-container.hidden {
+    display: none;
+}
+
+/* Testing Header */
+.adn-testing-header {
+    background: #fff;
+    padding: 20px;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.adn-testing-header h2 {
+    margin: 0;
+    color: #23282d;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.adn-testing-controls {
+    display: flex;
+    gap: 10px;
+}
+
+/* Buttons */
+.adn-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+
+.adn-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.adn-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.adn-btn-primary {
+    background: #0073aa;
+    color: white;
+}
+
+.adn-btn-primary:hover:not(:disabled) {
+    background: #005a87;
+}
+
+.adn-btn-secondary {
+    background: #666;
+    color: white;
+}
+
+.adn-btn-secondary:hover:not(:disabled) {
+    background: #555;
+}
+
+.adn-btn-tertiary {
+    background: #f7f7f7;
+    color: #555;
+    border: 1px solid #ccc;
+}
+
+.adn-btn-tertiary:hover:not(:disabled) {
+    background: #e7e7e7;
+}
+
+.adn-btn-small {
+    padding: 4px 8px;
+    font-size: 12px;
+}
+
+/* Progress Bar */
+.adn-testing-progress {
+    background: #fff;
+    padding: 15px 20px;
+    border-bottom: 1px solid #ddd;
+}
+
+.adn-progress-bar {
+    width: 100%;
+    height: 8px;
+    background: #e0e0e0;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.adn-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #0073aa, #00a0d2);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+    position: relative;
+}
+
+.adn-progress-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    animation: progress-shimmer 2s infinite;
+}
+
+@keyframes progress-shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+.adn-progress-text {
+    font-size: 14px;
+    color: #666;
+    font-weight: 500;
+}
+
+/* Main Content Area */
+.adn-testing-visualization {
+    flex: 1;
+    display: flex;
+    background: #fff;
+    margin: 0 20px 20px 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.adn-testing-sidebar {
+    width: 300px;
+    background: #f9f9f9;
+    border-left: 1px solid #ddd;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+/* Feature Map Container */
+#adn-feature-map-container {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+}
+
+.adn-feature-map-svg {
+    width: 100%;
+    height: 100%;
+}
+
+/* Group Selection */
+.adn-group-selection h3,
+.adn-test-status h3 {
+    margin: 0 0 15px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #23282d;
+    border-bottom: 2px solid #0073aa;
+    padding-bottom: 8px;
+}
+
+.adn-group-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.adn-group-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    flex: 1;
+}
+
+.adn-group-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 1px solid #ccc;
+}
+
+.adn-group-name {
+    font-weight: 500;
+    color: #23282d;
+}
+
+.adn-feature-count {
+    font-size: 12px;
+    color: #666;
+}
+
+/* Status Summary */
+.adn-status-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.adn-status-label {
+    font-weight: 500;
+    color: #555;
+}
+
+.adn-status-value {
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 12px;
+    background: #f0f0f0;
+    color: #333;
+    min-width: 24px;
+    text-align: center;
+}
+
+.adn-status-pass {
+    background: #d4edda;
+    color: #155724;
+}
+
+.adn-status-fail {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.adn-status-critical {
+    background: #f5c6cb;
+    color: #721c24;
+    font-weight: 700;
+}
+
+/* SVG Styles for Feature Map */
+.adn-group-node {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.adn-group-node:hover {
+    filter: brightness(1.1);
+}
+
+.adn-feature-node {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.adn-feature-node:hover {
+    transform: scale(1.1);
+}
+
+.adn-feature-circle {
+    transition: all 0.3s ease;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+}
+
+.adn-status-indicator {
+    transition: all 0.3s ease;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));
+}
+
+/* Animation Classes */
+.adn-pulse {
+    animation: adn-pulse 2s infinite;
+}
+
+@keyframes adn-pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+.adn-glow {
+    animation: adn-glow 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes adn-glow {
+    from { filter: drop-shadow(0 0 5px currentColor); }
+    to { filter: drop-shadow(0 0 15px currentColor); }
+}
+
+.adn-testing-active .adn-feature-circle {
+    animation: adn-pulse 2s infinite;
+}
+
+/* Status Colors */
+.adn-status-pending { fill: #6c757d; }
+.adn-status-running { fill: #007bff; }
+.adn-status-pass { fill: #28a745; }
+.adn-status-warning { fill: #ffc107; }
+.adn-status-fail { fill: #dc3545; }
+.adn-status-critical { fill: #e74c3c; }
+
+/* Tooltips */
+.adn-tooltip {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    pointer-events: none;
+    z-index: 1000;
+    max-width: 200px;
+    word-wrap: break-word;
+}
+
+.adn-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border: 5px solid transparent;
+    border-top-color: rgba(0, 0, 0, 0.9);
+}
+
+/* Modal Styles */
+.adn-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.adn-modal.hidden {
+    display: none;
+}
+
+.adn-modal-content {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.adn-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.adn-modal-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.adn-modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #666;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.adn-modal-close:hover {
+    background: #f0f0f0;
+    color: #333;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .adn-testing-sidebar {
+        width: 250px;
+    }
+}
+
+@media (max-width: 900px) {
+    .adn-testing-container {
+        left: 0;
+    }
+    
+    .adn-testing-visualization {
+        flex-direction: column;
+    }
+    
+    .adn-testing-sidebar {
+        width: 100%;
+        max-height: 200px;
+    }
+    
+    .adn-testing-header {
+        flex-direction: column;
+        gap: 15px;
+        align-items: stretch;
+    }
+    
+    .adn-testing-controls {
+        justify-content: center;
+    }
+}
+
+/* Loading States */
+.adn-loading {
+    position: relative;
+    overflow: hidden;
+}
+
+.adn-loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    animation: loading-shimmer 1.5s infinite;
+}
+
+@keyframes loading-shimmer {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+/* Feature Details */
+.adn-feature-details {
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 15px;
+    margin-top: 15px;
+}
+
+.adn-feature-details h4 {
+    margin: 0 0 10px 0;
+    color: #23282d;
+}
+
+.adn-feature-details p {
+    margin: 0 0 10px 0;
+    color: #666;
+    font-size: 14px;
+}
+
+.adn-feature-tests {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0 0 0;
+}
+
+.adn-feature-tests li {
+    padding: 5px 0;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.adn-test-result {
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.adn-test-result.pass {
+    background: #d4edda;
+    color: #155724;
+}
+
+.adn-test-result.fail {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.adn-test-result.warning {
+    background: #fff3cd;
+    color: #856404;
+}
+
+/* Accessibility */
+.adn-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Focus States */
+.adn-btn:focus,
+.adn-group-checkbox:focus,
+.adn-feature-node:focus {
+    outline: 2px solid #0073aa;
+    outline-offset: 2px;
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+    .adn-testing-container {
+        border: 2px solid;
+    }
+    
+    .adn-feature-circle {
+        stroke-width: 3px;
+    }
+    
+    .adn-status-indicator {
+        stroke: #000;
+        stroke-width: 1px;
+    }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+    .adn-feature-node,
+    .adn-feature-circle,
+    .adn-status-indicator,
+    .adn-progress-fill {
+        transition: none;
+    }
+    
+    .adn-pulse,
+    .adn-glow,
+    .progress-shimmer,
+    .loading-shimmer {
+        animation: none;
+    }
+}

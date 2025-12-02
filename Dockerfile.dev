@@ -1,0 +1,243 @@
+# ============================================================================
+# Aevov Development Dockerfile
+# ============================================================================
+# PHP 8.2 with WordPress, WP-CLI, Composer, and all required extensions
+# Optimized for Aevov plugin development and testing
+# ============================================================================
+
+FROM wordpress:latest
+
+LABEL maintainer="Aevov Development Team"
+LABEL description="WordPress development environment for Aevov ecosystem"
+
+# Set working directory
+WORKDIR /var/www/html
+
+# ============================================================================
+# Install System Dependencies
+# ============================================================================
+RUN apt-get update && apt-get install -y \
+    # Build tools
+    build-essential \
+    git \
+    curl \
+    wget \
+    unzip \
+    vim \
+    nano \
+    \
+    # PHP extensions dependencies
+    libfreetype6-dev \
+    libjpeg62-turbo-dev \
+    libpng-dev \
+    libwebp-dev \
+    libzip-dev \
+    libonig-dev \
+    libxml2-dev \
+    libicu-dev \
+    libssl-dev \
+    \
+    # Image processing
+    imagemagick \
+    libmagickwand-dev \
+    \
+    # Database clients
+    default-mysql-client \
+    \
+    # Redis client
+    redis-tools \
+    \
+    # Other utilities
+    less \
+    htop \
+    procps \
+    net-tools \
+    iputils-ping \
+    \
+    && rm -rf /var/lib/apt/lists/*
+
+# ============================================================================
+# Install PHP Extensions
+# ============================================================================
+RUN docker-php-ext-configure gd \
+        --with-freetype \
+        --with-jpeg \
+        --with-webp \
+    && docker-php-ext-install -j$(nproc) \
+        gd \
+        mysqli \
+        pdo \
+        pdo_mysql \
+        zip \
+        intl \
+        exif \
+        bcmath \
+        opcache \
+        soap \
+        sockets
+
+# Install Redis extension
+RUN pecl install redis-5.3.7 \
+    && docker-php-ext-enable redis
+
+# Install Imagick extension
+RUN pecl install imagick \
+    && docker-php-ext-enable imagick
+
+# Install Xdebug for development (optional, can be enabled via env var)
+RUN pecl install xdebug-3.2.2 \
+    && docker-php-ext-enable xdebug
+
+# ============================================================================
+# Install Composer
+# ============================================================================
+RUN curl -sS https://getcomposer.org/installer | php -- \
+    --install-dir=/usr/local/bin \
+    --filename=composer \
+    --version=2.6.5
+
+# ============================================================================
+# Install WP-CLI
+# ============================================================================
+RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
+    && chmod +x wp-cli.phar \
+    && mv wp-cli.phar /usr/local/bin/wp
+
+# ============================================================================
+# Install Node.js and npm (for asset building)
+# ============================================================================
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -y nodejs \
+    && npm install -g npm@latest
+
+# ============================================================================
+# PHP Configuration for Development
+# ============================================================================
+RUN { \
+    echo 'memory_limit = 512M'; \
+    echo 'upload_max_filesize = 64M'; \
+    echo 'post_max_size = 64M'; \
+    echo 'max_execution_time = 300'; \
+    echo 'max_input_time = 300'; \
+    echo 'display_errors = On'; \
+    echo 'error_reporting = E_ALL'; \
+    echo 'log_errors = On'; \
+    echo 'error_log = /var/log/php_errors.log'; \
+    echo 'date.timezone = UTC'; \
+    \
+    # Xdebug configuration (disabled by default, enable via env var)
+    echo 'xdebug.mode = off'; \
+    echo 'xdebug.start_with_request = yes'; \
+    echo 'xdebug.client_host = host.docker.internal'; \
+    echo 'xdebug.client_port = 9003'; \
+    echo 'xdebug.log = /tmp/xdebug.log'; \
+    \
+    # OPcache configuration
+    echo 'opcache.enable = 1'; \
+    echo 'opcache.memory_consumption = 128'; \
+    echo 'opcache.interned_strings_buffer = 8'; \
+    echo 'opcache.max_accelerated_files = 10000'; \
+    echo 'opcache.revalidate_freq = 0'; \
+    echo 'opcache.validate_timestamps = 1'; \
+} > /usr/local/etc/php/conf.d/custom.ini
+
+# ============================================================================
+# Apache Configuration
+# ============================================================================
+RUN a2enmod rewrite expires headers ssl
+
+# Custom Apache configuration
+RUN { \
+    echo '<Directory /var/www/html>'; \
+    echo '  Options Indexes FollowSymLinks'; \
+    echo '  AllowOverride All'; \
+    echo '  Require all granted'; \
+    echo '</Directory>'; \
+} > /etc/apache2/conf-available/wordpress.conf \
+    && a2enconf wordpress
+
+# ============================================================================
+# Create Required Directories
+# ============================================================================
+RUN mkdir -p \
+    /var/www/html/wp-content/plugins \
+    /var/www/html/wp-content/uploads \
+    /var/www/html/wp-content/testing \
+    /var/log \
+    && chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html
+
+# ============================================================================
+# Install WordPress Testing Framework
+# ============================================================================
+RUN mkdir -p /tmp/wordpress-tests-lib \
+    && cd /tmp/wordpress-tests-lib \
+    && svn co --quiet https://develop.svn.wordpress.org/tags/6.4/tests/phpunit/includes/ includes \
+    && svn co --quiet https://develop.svn.wordpress.org/tags/6.4/tests/phpunit/data/ data \
+    && wget -q https://develop.svn.wordpress.org/tags/6.4/wp-tests-config-sample.php -O wp-tests-config.php
+
+# ============================================================================
+# Add Custom Scripts
+# ============================================================================
+
+# Script to activate all Aevov plugins
+RUN { \
+    echo '#!/bin/bash'; \
+    echo 'echo "Activating all Aevov plugins..."'; \
+    echo 'cd /var/www/html'; \
+    echo 'for plugin_dir in wp-content/plugins/aevov-*; do'; \
+    echo '  plugin=$(basename "$plugin_dir")'; \
+    echo '  wp plugin activate "$plugin" --allow-root 2>/dev/null && echo "✓ Activated: $plugin" || echo "✗ Failed: $plugin"'; \
+    echo 'done'; \
+    echo 'wp plugin activate aps-tools bloom-chunk-scanner bloom-pattern-recognition AevovPatternSyncProtocol --allow-root 2>/dev/null'; \
+    echo 'echo "Done!"'; \
+} > /usr/local/bin/activate-aevov-plugins \
+    && chmod +x /usr/local/bin/activate-aevov-plugins
+
+# Script to run Aevov tests
+RUN { \
+    echo '#!/bin/bash'; \
+    echo 'echo "Running Aevov workflow tests..."'; \
+    echo 'php /var/www/html/wp-content/testing/workflow-test-runner.php "$@"'; \
+} > /usr/local/bin/aevov-test \
+    && chmod +x /usr/local/bin/aevov-test
+
+# Script to setup WordPress
+RUN { \
+    echo '#!/bin/bash'; \
+    echo 'set -e'; \
+    echo 'if ! wp core is-installed --allow-root 2>/dev/null; then'; \
+    echo '  echo "Installing WordPress..."'; \
+    echo '  wp core install \'; \
+    echo '    --url="http://localhost:8080" \'; \
+    echo '    --title="Aevov Development Site" \'; \
+    echo '    --admin_user="admin" \'; \
+    echo '    --admin_password="admin" \'; \
+    echo '    --admin_email="admin@aevov.local" \'; \
+    echo '    --skip-email \'; \
+    echo '    --allow-root'; \
+    echo '  echo "WordPress installed successfully!"'; \
+    echo '  activate-aevov-plugins'; \
+    echo 'else'; \
+    echo '  echo "WordPress already installed."'; \
+    echo 'fi'; \
+} > /usr/local/bin/setup-wordpress \
+    && chmod +x /usr/local/bin/setup-wordpress
+
+# ============================================================================
+# Healthcheck
+# ============================================================================
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost/ || exit 1
+
+# ============================================================================
+# Entrypoint
+# ============================================================================
+COPY docker/docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh || true
+
+# Expose port
+EXPOSE 80
+
+# Start Apache
+CMD ["apache2-foreground"]

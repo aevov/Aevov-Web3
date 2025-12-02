@@ -1,0 +1,399 @@
+/**
+ * Aevov Workflow Engine Admin Styles
+ */
+
+:root {
+    --aevov-primary: #0ea5e9;
+    --aevov-primary-dark: #0284c7;
+    --aevov-bg-dark: #1a1a2e;
+    --aevov-bg-card: #16213e;
+    --aevov-border: #2d3748;
+    --aevov-text: #e2e8f0;
+    --aevov-text-muted: #94a3b8;
+    --aevov-success: #22c55e;
+    --aevov-warning: #f59e0b;
+    --aevov-error: #ef4444;
+}
+
+/* Main Container */
+.aevov-workflow-wrap {
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: none !important;
+}
+
+#aevov-workflow-builder {
+    position: fixed;
+    top: 32px;
+    left: 160px;
+    right: 0;
+    bottom: 0;
+    background: var(--aevov-bg-dark);
+    z-index: 100;
+}
+
+@media screen and (max-width: 960px) {
+    #aevov-workflow-builder {
+        left: 36px;
+    }
+}
+
+@media screen and (max-width: 782px) {
+    #aevov-workflow-builder {
+        top: 46px;
+        left: 0;
+    }
+}
+
+/* Loading State */
+.aevov-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--aevov-text);
+    gap: 16px;
+}
+
+.aevov-loading-spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid rgba(255, 255, 255, 0.2);
+    border-top-color: var(--aevov-primary);
+    border-radius: 50%;
+    animation: aevov-spin 1s linear infinite;
+}
+
+@keyframes aevov-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Workflow Canvas */
+.aevov-canvas {
+    width: 100%;
+    height: 100%;
+}
+
+.react-flow__node-aevovNode {
+    background: var(--aevov-bg-card);
+    border: 2px solid var(--aevov-border);
+    border-radius: 8px;
+    padding: 0;
+    min-width: 180px;
+}
+
+.react-flow__node-aevovNode.selected {
+    border-color: var(--aevov-primary);
+    box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.3);
+}
+
+.react-flow__handle {
+    width: 12px;
+    height: 12px;
+    background: var(--aevov-primary);
+    border: 2px solid var(--aevov-bg-dark);
+}
+
+.react-flow__edge-path {
+    stroke: var(--aevov-primary);
+    stroke-width: 2;
+}
+
+.react-flow__background {
+    background: var(--aevov-bg-dark);
+}
+
+/* Sidebar */
+.aevov-sidebar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 280px;
+    background: var(--aevov-bg-card);
+    border-right: 1px solid var(--aevov-border);
+    display: flex;
+    flex-direction: column;
+    z-index: 10;
+}
+
+.aevov-sidebar-header {
+    padding: 16px;
+    border-bottom: 1px solid var(--aevov-border);
+}
+
+.aevov-sidebar-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px;
+}
+
+.aevov-node-category {
+    margin-bottom: 8px;
+}
+
+.aevov-node-category-header {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 6px;
+    color: var(--aevov-text);
+    font-weight: 500;
+}
+
+.aevov-node-category-header:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.aevov-node-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px 8px 32px;
+    cursor: grab;
+    border-radius: 6px;
+    color: var(--aevov-text);
+    font-size: 13px;
+    transition: all 0.2s;
+}
+
+.aevov-node-item:hover {
+    background: rgba(14, 165, 233, 0.1);
+    border-color: var(--aevov-primary);
+}
+
+.aevov-node-item:active {
+    cursor: grabbing;
+}
+
+.aevov-node-item-icon {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+/* Toolbar */
+.aevov-toolbar {
+    position: absolute;
+    top: 0;
+    left: 280px;
+    right: 0;
+    height: 56px;
+    background: var(--aevov-bg-card);
+    border-bottom: 1px solid var(--aevov-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    z-index: 10;
+}
+
+.aevov-toolbar-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.aevov-toolbar-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    background: transparent;
+    color: var(--aevov-text);
+}
+
+.aevov-toolbar-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.aevov-toolbar-btn.primary {
+    background: var(--aevov-primary);
+    color: white;
+}
+
+.aevov-toolbar-btn.primary:hover {
+    background: var(--aevov-primary-dark);
+}
+
+.aevov-toolbar-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Config Panel */
+.aevov-config-panel {
+    position: absolute;
+    right: 0;
+    top: 56px;
+    bottom: 0;
+    width: 320px;
+    background: var(--aevov-bg-card);
+    border-left: 1px solid var(--aevov-border);
+    display: flex;
+    flex-direction: column;
+    z-index: 10;
+}
+
+.aevov-config-header {
+    padding: 16px;
+    border-bottom: 1px solid var(--aevov-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.aevov-config-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+}
+
+.aevov-config-field {
+    margin-bottom: 16px;
+}
+
+.aevov-config-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--aevov-text-muted);
+    margin-bottom: 6px;
+}
+
+.aevov-config-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--aevov-border);
+    border-radius: 6px;
+    background: var(--aevov-bg-dark);
+    color: var(--aevov-text);
+    font-size: 13px;
+}
+
+.aevov-config-input:focus {
+    outline: none;
+    border-color: var(--aevov-primary);
+}
+
+.aevov-config-textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.aevov-config-select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 16px;
+    padding-right: 32px;
+}
+
+/* Status indicators */
+.status-completed,
+.status-published {
+    color: var(--aevov-success);
+}
+
+.status-failed {
+    color: var(--aevov-error);
+}
+
+.status-running,
+.status-pending {
+    color: var(--aevov-warning);
+}
+
+.status-draft {
+    color: var(--aevov-text-muted);
+}
+
+/* Templates Grid */
+.aevov-templates-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.aevov-template-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    transition: all 0.2s;
+}
+
+.aevov-template-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.aevov-template-card h3 {
+    margin-top: 0;
+    margin-bottom: 8px;
+}
+
+.aevov-template-card p {
+    color: #666;
+    margin-bottom: 16px;
+}
+
+/* Execution Results */
+.aevov-results-panel {
+    position: absolute;
+    bottom: 0;
+    left: 280px;
+    right: 0;
+    max-height: 300px;
+    background: var(--aevov-bg-card);
+    border-top: 1px solid var(--aevov-border);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.aevov-results-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--aevov-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.aevov-results-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    font-family: monospace;
+    font-size: 12px;
+    white-space: pre-wrap;
+}
+
+.aevov-log-entry {
+    padding: 4px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.aevov-log-entry.error {
+    color: var(--aevov-error);
+}
+
+.aevov-log-entry.warning {
+    color: var(--aevov-warning);
+}
+
+.aevov-log-time {
+    color: var(--aevov-text-muted);
+    margin-right: 8px;
+}

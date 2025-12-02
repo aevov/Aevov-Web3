@@ -1,0 +1,110 @@
+# PHPStan Static Analysis Configuration for Aevov Ecosystem
+# https://phpstan.org/config-reference
+
+parameters:
+    # Analysis level (0-9, where 9 is the strictest)
+    # Level 6 is a good balance between strictness and practicality for WordPress plugins
+    level: 6
+
+    # Paths to analyze
+    paths:
+        - aevov-core
+        - aevov-application-forge
+        - aevov-chat-ui
+        - aevov-chunk-registry
+        - aevov-cognitive-engine
+        - aevov-cubbit-cdn
+        - aevov-cubbit-downloader
+        - aevov-demo-system
+        - aevov-diagnostic-network
+        - aevov-embedding-engine
+        - aevov-image-engine
+        - aevov-language-engine
+        - aevov-language-engine-v2
+        - aevov-memory-core
+        - aevov-music-forge
+        - aevov-neuro-architect
+        - aevov-onboarding-system
+        - aevov-physics-engine
+        - aevov-playground
+        - aevov-reasoning-engine
+        - aevov-security
+        - aevov-simulation-engine
+        - aevov-stream
+        - aevov-super-app-forge
+        - aevov-testing-framework
+        - aevov-transcription-engine
+        - aevov-unified-dashboard
+        - aevov-vision-depth
+        - aps-tools
+        - bloom-chunk-scanner
+        - bloom-pattern-recognition
+        - AevovPatternSyncProtocol
+        - testing
+
+    # Exclude paths
+    excludePaths:
+        - */vendor/*
+        - */node_modules/*
+        - */tests/*
+        - */assets/*
+        - */dist/*
+        - */.git/*
+
+    # Bootstrap files (if needed for WordPress stubs)
+    # bootstrapFiles:
+    #     - phpstan-bootstrap.php
+
+    # Ignore errors from external dependencies
+    ignoreErrors:
+        # WordPress core functions are dynamically defined
+        - '#Function (add_action|add_filter|do_action|apply_filters|wp_enqueue_script|wp_enqueue_style|get_option|update_option|delete_option|__) not found#'
+        - '#Function (esc_html|esc_attr|esc_url|esc_js|sanitize_text_field|sanitize_key|wp_kses_post) not found#'
+        - '#Function (wp_die|wp_redirect|wp_safe_redirect|wp_parse_args|wp_json_encode|current_user_can) not found#'
+        - '#Function (register_rest_route|rest_ensure_response|is_wp_error|get_post|get_posts|wp_insert_post|wp_update_post) not found#'
+
+        # WordPress global variables
+        - '#Variable \$wpdb might not be defined#'
+        - '#Undefined variable: \$wpdb#'
+        - '#Access to an undefined property wpdb::#'
+
+        # WordPress constants
+        - '#Constant (ABSPATH|WP_DEBUG|WP_CONTENT_DIR|WP_PLUGIN_DIR|WPINC) not found#'
+
+    # Report unmatched ignored errors
+    reportUnmatchedIgnoredErrors: false
+
+    # Check for missing typehints
+    checkMissingIterableValueType: false
+    checkGenericClassInNonGenericObjectType: false
+
+    # Allow mixed types (WordPress code often uses mixed)
+    checkExplicitMixed: false
+
+    # Memory limit
+    memoryLimit: 512M
+
+    # Parallel processing
+    parallel:
+        jobSize: 20
+        maximumNumberOfProcesses: 4
+
+    # Custom rules for WordPress plugins
+    stubFiles:
+        # Uncomment if you have WordPress stubs installed via Composer
+        # - vendor/php-stubs/wordpress-stubs/wordpress-stubs.php
+
+    # Type coverage (optional, for future improvement)
+    # checkMissingCallableSignature: true
+    # checkUninitializedProperties: true
+
+# Include additional configuration files
+# includes:
+#     - phpstan-wordpress.neon
+
+# Services (custom extensions if needed)
+# services:
+#     -
+#         class: My\PHPStan\Extension
+#         tags:
+#             - phpstan.extension

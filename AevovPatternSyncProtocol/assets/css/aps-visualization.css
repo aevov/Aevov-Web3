@@ -1,0 +1,139 @@
+/* APS Visualization Styles */
+
+.aps-visualization-container {
+    position: relative;
+    margin: 1rem 0;
+    background: #ffffff;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.aps-visualization {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+/* Heatmap styles */
+.aps-heatmap rect {
+    transition: fill 0.2s ease;
+}
+
+.aps-heatmap rect:hover {
+    stroke: #000;
+    stroke-width: 0.5px;
+}
+
+/* Network graph styles */
+.aps-network-node {
+    fill: #69b3a2;
+    stroke: #fff;
+    stroke-width: 1.5px;
+}
+
+.aps-network-node:hover {
+    fill: #28736a;
+    cursor: pointer;
+}
+
+.aps-network-link {
+    stroke: #999;
+    stroke-opacity: 0.6;
+}
+
+.aps-network-label {
+    font-size: 12px;
+    font-family: sans-serif;
+    pointer-events: none;
+}
+
+/* Matrix visualization styles */
+.aps-matrix rect {
+    stroke: #fff;
+    stroke-width: 0.5px;
+}
+
+.aps-matrix rect:hover {
+    stroke: #000;
+    stroke-width: 1px;
+}
+
+.aps-matrix .row-label,
+.aps-matrix .column-label {
+    font-size: 12px;
+    font-family: sans-serif;
+}
+
+/* Tooltip styles */
+.aps-tooltip {
+    position: absolute;
+    padding: 8px 12px;
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    border-radius: 4px;
+    font-size: 12px;
+    pointer-events: none;
+    z-index: 1000;
+    max-width: 200px;
+    white-space: pre-wrap;
+}
+
+/* Legend styles */
+.aps-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1rem;
+    padding: 0.5rem;
+    background: #f8f9fa;
+    border-radius: 4px;
+}
+
+.aps-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 12px;
+}
+
+.aps-legend-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+}
+
+/* Control panel styles */
+.aps-controls {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 4px;
+}
+
+.aps-control-group {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.aps-control-label {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.aps-control-input {
+    padding: 0.25rem 0.5rem;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+/* Animation styles */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.aps-animate-fade {
+    animation: fadeIn 0.3s ease-in-out;
+}

@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    PHPUnit Configuration for Aevov Ecosystem
+    ==========================================
+
+    Comprehensive test configuration with code coverage
+
+    Usage:
+      vendor/bin/phpunit                    # Run all tests
+      vendor/bin/phpunit --coverage-html    # Generate HTML coverage report
+      vendor/bin/phpunit --testdox          # Human-readable output
+
+    Coverage threshold: 90%
+-->
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd"
+         bootstrap="tests/bootstrap.php"
+         colors="true"
+         verbose="true"
+         cacheDirectory=".phpunit.cache"
+         executionOrder="depends,defects"
+         beStrictAboutOutputDuringTests="true"
+         failOnRisky="true"
+         failOnWarning="true">
+
+    <!-- ====================================================================== -->
+    <!-- Test Suites -->
+    <!-- ====================================================================== -->
+    <testsuites>
+        <!-- Unit Tests -->
+        <testsuite name="unit">
+            <directory suffix="Test.php">tests/unit</directory>
+        </testsuite>
+
+        <!-- Integration Tests -->
+        <testsuite name="integration">
+            <directory suffix="Test.php">tests/integration</directory>
+        </testsuite>
+
+        <!-- Workflow Tests -->
+        <testsuite name="workflow">
+            <directory suffix="Test.php">tests/workflow</directory>
+        </testsuite>
+
+        <!-- Plugin-Specific Tests -->
+        <testsuite name="aevov-core">
+            <directory suffix="Test.php">aevov-core/tests</directory>
+        </testsuite>
+
+        <testsuite name="aevov-application-forge">
+            <directory suffix="Test.php">aevov-application-forge/tests</directory>
+        </testsuite>
+
+        <testsuite name="aevov-chat-ui">
+            <directory suffix="Test.php">aevov-chat-ui/tests</directory>
+        </testsuite>
+
+        <testsuite name="aevov-language-engine">
+            <directory suffix="Test.php">aevov-language-engine/tests</directory>
+        </testsuite>
+
+        <testsuite name="bloom">
+            <directory suffix="Test.php">bloom-pattern-recognition/tests</directory>
+        </testsuite>
+
+        <testsuite name="aps">
+            <directory suffix="Test.php">aps-tools/tests</directory>
+        </testsuite>
+    </testsuites>
+
+    <!-- ====================================================================== -->
+    <!-- Code Coverage Configuration -->
+    <!-- ====================================================================== -->
+    <source>
+        <!-- Include all plugin PHP files for coverage -->
+        <include>
+            <directory suffix=".php">aevov-core</directory>
+            <directory suffix=".php">aevov-application-forge</directory>
+            <directory suffix=".php">aevov-chat-ui</directory>
+            <directory suffix=".php">aevov-chunk-registry</directory>
+            <directory suffix=".php">aevov-cognitive-engine</directory>
+            <directory suffix=".php">aevov-cubbit-cdn</directory>
+            <directory suffix=".php">aevov-cubbit-downloader</directory>
+            <directory suffix=".php">aevov-demo-system</directory>
+            <directory suffix=".php">aevov-diagnostic-network</directory>
+            <directory suffix=".php">aevov-embedding-engine</directory>
+            <directory suffix=".php">aevov-image-engine</directory>
+            <directory suffix=".php">aevov-language-engine</directory>
+            <directory suffix=".php">aevov-language-engine-v2</directory>
+            <directory suffix=".php">aevov-memory-core</directory>
+            <directory suffix=".php">aevov-music-forge</directory>
+            <directory suffix=".php">aevov-neuro-architect</directory>
+            <directory suffix=".php">aevov-onboarding-system</directory>
+            <directory suffix=".php">aevov-physics-engine</directory>
+            <directory suffix=".php">aevov-playground</directory>
+            <directory suffix=".php">aevov-reasoning-engine</directory>
+            <directory suffix=".php">aevov-security</directory>
+            <directory suffix=".php">aevov-simulation-engine</directory>
+            <directory suffix=".php">aevov-stream</directory>
+            <directory suffix=".php">aevov-super-app-forge</directory>
+            <directory suffix=".php">aevov-testing-framework</directory>
+            <directory suffix=".php">aevov-transcription-engine</directory>
+            <directory suffix=".php">aevov-unified-dashboard</directory>
+            <directory suffix=".php">aevov-vision-depth</directory>
+            <directory suffix=".php">aps-tools</directory>
+            <directory suffix=".php">bloom-chunk-scanner</directory>
+            <directory suffix=".php">bloom-pattern-recognition</directory>
+            <directory suffix=".php">AevovPatternSyncProtocol</directory>
+        </include>
+
+        <!-- Exclude patterns -->
+        <exclude>
+            <directory>vendor</directory>
+            <directory>node_modules</directory>
+            <directory suffix=".php">tests</directory>
+            <directory suffix=".php">*/tests</directory>
+            <directory suffix=".php">*/vendor</directory>
+            <directory suffix=".php">*/assets</directory>
+            <directory suffix=".php">*/dist</directory>
+            <directory suffix=".php">*/build</directory>
+            <file>*-config.php</file>
+        </exclude>
+    </source>
+
+    <!-- ====================================================================== -->
+    <!-- Coverage Reports -->
+    <!-- ====================================================================== -->
+    <coverage processUncoveredFiles="true"
+              pathCoverage="false"
+              ignoreDeprecatedCodeUnits="true"
+              disableCodeCoverageIgnore="false">
+        <report>
+            <!-- HTML Coverage Report -->
+            <html outputDirectory="reports/coverage" lowUpperBound="50" highLowerBound="90"/>
+
+            <!-- Clover XML (for CI) -->
+            <clover outputFile="reports/coverage/clover.xml"/>
+
+            <!-- Text Coverage (console output) -->
+            <text outputFile="php://stdout" showUncoveredFiles="false" showOnlySummary="true"/>
+
+            <!-- PHP Coverage (for analysis) -->
+            <php outputFile="reports/coverage/coverage.php"/>
+        </report>
+    </coverage>
+
+    <!-- ====================================================================== -->
+    <!-- Logging -->
+    <!-- ====================================================================== -->
+    <logging>
+        <!-- JUnit XML (for CI) -->
+        <junit outputFile="reports/junit.xml"/>
+
+        <!-- TeamCity -->
+        <!-- <teamcity outputFile="reports/teamcity.txt"/> -->
+
+        <!-- TestDox HTML -->
+        <testdoxHtml outputFile="reports/testdox.html"/>
+
+        <!-- TestDox Text -->
+        <testdoxText outputFile="reports/testdox.txt"/>
+    </logging>
+
+    <!-- ====================================================================== -->
+    <!-- PHP Configuration -->
+    <!-- ====================================================================== -->
+    <php>
+        <!-- WordPress Test Configuration -->
+        <const name="WP_TESTS_PHPUNIT_POLYFILLS_PATH" value="vendor/yoast/phpunit-polyfills"/>
+        <const name="WP_TESTS_DIR" value="/tmp/wordpress-tests-lib"/>
+        <const name="WP_TESTS_CONFIG_FILE_PATH" value="/tmp/wordpress-tests-lib/wp-tests-config.php"/>
+
+        <!-- Test Database Configuration -->
+        <const name="DB_NAME" value="wordpress_test"/>
+        <const name="DB_USER" value="root"/>
+        <const name="DB_PASSWORD" value="root"/>
+        <const name="DB_HOST" value="127.0.0.1"/>
+        <const name="DB_CHARSET" value="utf8mb4"/>
+        <const name="DB_COLLATE" value=""/>
+
+        <!-- WordPress Configuration -->
+        <const name="WP_DEBUG" value="true"/>
+        <const name="WP_DEBUG_LOG" value="false"/>
+        <const name="WP_DEBUG_DISPLAY" value="false"/>
+        <const name="SCRIPT_DEBUG" value="false"/>
+        <const name="SAVEQUERIES" value="false"/>
+
+        <!-- Test Mode Configuration -->
+        <const name="AEVOV_TEST_MODE" value="true"/>
+        <const name="AEVOV_QUICK_TEST" value="false"/>
+
+        <!-- Server Variables -->
+        <server name="SERVER_NAME" value="localhost"/>
+        <server name="SERVER_PROTOCOL" value="HTTP/1.1"/>
+        <server name="HTTP_HOST" value="localhost"/>
+        <server name="REQUEST_METHOD" value="GET"/>
+        <server name="REMOTE_ADDR" value="127.0.0.1"/>
+
+        <!-- Environment Variables -->
+        <env name="WP_ENV" value="test"/>
+        <env name="WP_ENVIRONMENT_TYPE" value="local"/>
+    </php>
+
+    <!-- ====================================================================== -->
+    <!-- Extensions -->
+    <!-- ====================================================================== -->
+    <!-- <extensions>
+        <bootstrap class="MyCustomBootstrap"/>
+    </extensions> -->
+
+</phpunit>

@@ -1,0 +1,112 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --aevov-primary: #0ea5e9;
+    --aevov-primary-dark: #0284c7;
+    --aevov-bg-dark: #1a1a2e;
+    --aevov-bg-card: #16213e;
+    --aevov-border: #2d3748;
+    --aevov-text: #e2e8f0;
+    --aevov-text-muted: #94a3b8;
+}
+
+#aevov-workflow-builder {
+    width: 100%;
+    height: calc(100vh - 32px);
+    background: var(--aevov-bg-dark);
+    color: var(--aevov-text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+}
+
+.react-flow__node-aevovNode {
+    background: var(--aevov-bg-card);
+    border: 2px solid var(--aevov-border);
+    border-radius: 8px;
+    min-width: 180px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+}
+
+.react-flow__node-aevovNode.selected {
+    border-color: var(--aevov-primary);
+    box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.4);
+}
+
+.react-flow__handle {
+    width: 12px;
+    height: 12px;
+    background: var(--aevov-primary);
+    border: 2px solid var(--aevov-bg-dark);
+}
+
+.react-flow__edge-path {
+    stroke: var(--aevov-primary);
+    stroke-width: 2;
+}
+
+.react-flow__edge.selected .react-flow__edge-path {
+    stroke-width: 3;
+}
+
+.react-flow__background {
+    background: var(--aevov-bg-dark) !important;
+}
+
+.react-flow__minimap {
+    background: var(--aevov-bg-card) !important;
+    border-radius: 8px;
+}
+
+.react-flow__controls {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+}
+
+.react-flow__controls-button {
+    background: var(--aevov-bg-card) !important;
+    border-color: var(--aevov-border) !important;
+    fill: var(--aevov-text) !important;
+}
+
+.react-flow__controls-button:hover {
+    background: var(--aevov-border) !important;
+}
+
+/* Animations */
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--aevov-bg-dark);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--aevov-border);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--aevov-text-muted);
+}

@@ -1,0 +1,231 @@
+<?xml version="1.0"?>
+<ruleset name="Aevov Ecosystem Coding Standards">
+    <description>Coding standards for the Aevov WordPress plugin ecosystem</description>
+
+    <!-- ====================================================================== -->
+    <!-- What to scan -->
+    <!-- ====================================================================== -->
+
+    <!-- Scan all plugin directories -->
+    <file>./aevov-core</file>
+    <file>./aevov-application-forge</file>
+    <file>./aevov-chat-ui</file>
+    <file>./aevov-chunk-registry</file>
+    <file>./aevov-cognitive-engine</file>
+    <file>./aevov-cubbit-cdn</file>
+    <file>./aevov-cubbit-downloader</file>
+    <file>./aevov-demo-system</file>
+    <file>./aevov-diagnostic-network</file>
+    <file>./aevov-embedding-engine</file>
+    <file>./aevov-image-engine</file>
+    <file>./aevov-language-engine</file>
+    <file>./aevov-language-engine-v2</file>
+    <file>./aevov-memory-core</file>
+    <file>./aevov-music-forge</file>
+    <file>./aevov-neuro-architect</file>
+    <file>./aevov-onboarding-system</file>
+    <file>./aevov-physics-engine</file>
+    <file>./aevov-playground</file>
+    <file>./aevov-reasoning-engine</file>
+    <file>./aevov-security</file>
+    <file>./aevov-simulation-engine</file>
+    <file>./aevov-stream</file>
+    <file>./aevov-super-app-forge</file>
+    <file>./aevov-testing-framework</file>
+    <file>./aevov-transcription-engine</file>
+    <file>./aevov-unified-dashboard</file>
+    <file>./aevov-vision-depth</file>
+    <file>./aps-tools</file>
+    <file>./bloom-chunk-scanner</file>
+    <file>./bloom-pattern-recognition</file>
+    <file>./AevovPatternSyncProtocol</file>
+    <file>./testing</file>
+    <file>./bin</file>
+
+    <!-- Exclude patterns -->
+    <exclude-pattern>*/vendor/*</exclude-pattern>
+    <exclude-pattern>*/node_modules/*</exclude-pattern>
+    <exclude-pattern>*/tests/*</exclude-pattern>
+    <exclude-pattern>*/assets/*</exclude-pattern>
+    <exclude-pattern>*/dist/*</exclude-pattern>
+    <exclude-pattern>*/.git/*</exclude-pattern>
+    <exclude-pattern>*/build/*</exclude-pattern>
+    <exclude-pattern>*.min.js</exclude-pattern>
+    <exclude-pattern>*.min.css</exclude-pattern>
+
+    <!-- ====================================================================== -->
+    <!-- How to scan -->
+    <!-- ====================================================================== -->
+
+    <!-- Show progress and sniff codes -->
+    <arg value="ps"/>
+
+    <!-- Show colors in output -->
+    <arg name="colors"/>
+
+    <!-- Use all available CPU cores for parallel processing -->
+    <arg name="parallel" value="8"/>
+
+    <!-- Only check PHP files -->
+    <arg name="extensions" value="php"/>
+
+    <!-- ====================================================================== -->
+    <!-- Rules: WordPress Coding Standards -->
+    <!-- ====================================================================== -->
+
+    <!-- Include WordPress coding standards -->
+    <rule ref="WordPress">
+        <!-- Allow short array syntax -->
+        <exclude name="Generic.Arrays.DisallowShortArraySyntax"/>
+        <exclude name="Universal.Arrays.DisallowShortArraySyntax"/>
+
+        <!-- Allow closures/anonymous functions without comments -->
+        <exclude name="Squiz.Commenting.ClosureComment"/>
+
+        <!-- Allow file comments to be flexible -->
+        <exclude name="Squiz.Commenting.FileComment"/>
+
+        <!-- Allow variable comments to be flexible -->
+        <exclude name="Squiz.Commenting.VariableComment"/>
+
+        <!-- Allow function comment format to be flexible -->
+        <exclude name="Squiz.Commenting.FunctionComment.MissingParamComment"/>
+        <exclude name="Squiz.Commenting.FunctionComment.ParamCommentFullStop"/>
+
+        <!-- Allow TODO comments without issue numbers -->
+        <exclude name="Squiz.Commenting.InlineComment.InvalidEndChar"/>
+        <exclude name="Generic.Commenting.Todo.TaskFound"/>
+
+        <!-- Allow Yoda conditions to be optional -->
+        <exclude name="WordPress.PHP.YodaConditions"/>
+
+        <!-- Allow modern PHP features -->
+        <exclude name="PHPCompatibility.FunctionUse.NewFunctions"/>
+        <exclude name="PHPCompatibility.FunctionDeclarations.NewClosure"/>
+    </rule>
+
+    <!-- WordPress Extra rules (including security checks) -->
+    <rule ref="WordPress-Extra">
+        <!-- But exclude some overly strict rules -->
+        <exclude name="WordPress.Files.FileName"/>
+        <exclude name="WordPress.NamingConventions.ValidVariableName"/>
+    </rule>
+
+    <!-- WordPress Docs rules -->
+    <rule ref="WordPress-Docs">
+        <!-- Exclude strict docblock requirements for small functions -->
+        <exclude name="Generic.Commenting.DocComment.MissingShort"/>
+    </rule>
+
+    <!-- ====================================================================== -->
+    <!-- Rules: Security and Best Practices -->
+    <!-- ====================================================================== -->
+
+    <!-- Check for security vulnerabilities -->
+    <rule ref="WordPress.Security">
+        <!-- All security rules are important -->
+    </rule>
+
+    <!-- Database security -->
+    <rule ref="WordPress.DB">
+        <!-- Ensure proper escaping and preparation -->
+    </rule>
+
+    <!-- Sanitization and validation -->
+    <rule ref="WordPress.Security.ValidatedSanitizedInput"/>
+    <rule ref="WordPress.Security.EscapeOutput"/>
+    <rule ref="WordPress.Security.NonceVerification"/>
+
+    <!-- ====================================================================== -->
+    <!-- Rules: PHP Version Compatibility -->
+    <!-- ====================================================================== -->
+
+    <!-- Check compatibility with PHP 7.4+ -->
+    <config name="testVersion" value="7.4-"/>
+    <rule ref="PHPCompatibilityWP"/>
+
+    <!-- ====================================================================== -->
+    <!-- Custom Rules for Aevov Ecosystem -->
+    <!-- ====================================================================== -->
+
+    <!-- Enforce line length limit (relaxed for readability) -->
+    <rule ref="Generic.Files.LineLength">
+        <properties>
+            <property name="lineLimit" value="120"/>
+            <property name="absoluteLineLimit" value="150"/>
+        </properties>
+    </rule>
+
+    <!-- Enforce indent using tabs -->
+    <rule ref="Generic.WhiteSpace.DisallowSpaceIndent"/>
+
+    <!-- Ensure proper function spacing -->
+    <rule ref="Squiz.WhiteSpace.FunctionSpacing">
+        <properties>
+            <property name="spacing" value="2"/>
+            <property name="spacingBeforeFirst" value="0"/>
+            <property name="spacingAfterLast" value="0"/>
+        </properties>
+    </rule>
+
+    <!-- Check for proper brace placement -->
+    <rule ref="Squiz.ControlStructures.ControlSignature"/>
+
+    <!-- Ensure proper use of WordPress functions -->
+    <rule ref="WordPress.WP.AlternativeFunctions"/>
+    <rule ref="WordPress.WP.DeprecatedFunctions"/>
+    <rule ref="WordPress.WP.DiscouragedFunctions"/>
+
+    <!-- Internationalization (i18n) checks -->
+    <rule ref="WordPress.WP.I18n">
+        <properties>
+            <!-- Set the text domain for the plugins -->
+            <property name="text_domain" type="array">
+                <element value="aevov"/>
+                <element value="aevov-core"/>
+                <element value="aevov-plugins"/>
+                <element value="bloom"/>
+                <element value="aps-tools"/>
+            </property>
+        </properties>
+    </rule>
+
+    <!-- Prefix all global functions, classes, and variables -->
+    <rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+        <properties>
+            <property name="prefixes" type="array">
+                <element value="aevov"/>
+                <element value="Aevov"/>
+                <element value="AEVOV"/>
+                <element value="bloom"/>
+                <element value="Bloom"/>
+                <element value="BLOOM"/>
+                <element value="aps"/>
+                <element value="APS"/>
+            </property>
+        </properties>
+    </rule>
+
+    <!-- ====================================================================== -->
+    <!-- Performance Rules -->
+    <!-- ====================================================================== -->
+
+    <!-- Warn about slow functions -->
+    <rule ref="WordPress.PHP.DiscouragedPHPFunctions">
+        <properties>
+            <property name="exclude" type="array">
+                <!-- Allow serialize/unserialize for specific use cases -->
+                <element value="serialize"/>
+                <element value="unserialize"/>
+            </property>
+        </properties>
+    </rule>
+
+    <!-- ====================================================================== -->
+    <!-- Accessibility Rules -->
+    <!-- ====================================================================== -->
+
+    <!-- Check for basic accessibility in HTML output -->
+    <rule ref="WordPress.WP.EnqueuedResourceParameters"/>
+
+</ruleset>

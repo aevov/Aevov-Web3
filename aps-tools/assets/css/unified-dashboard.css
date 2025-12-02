@@ -1,0 +1,69 @@
+#aps-unified-dashboard {
+    padding: 20px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+}
+
+.global-search-bar {
+    margin-bottom: 20px;
+}
+
+.global-search-bar input {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+}
+
+.command-center {
+    margin-bottom: 20px;
+}
+
+.command-center button {
+    margin-right: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.activity-feed {
+    margin-bottom: 20px;
+    border: 1px solid #e5e5e5;
+    padding: 20px;
+}
+
+.loading {
+    text-align: center;
+    padding: 50px;
+    font-size: 20px;
+}
+
+.activity-feed h2 {
+    margin-top: 0;
+}
+
+.activity-feed ul {
+    list-style: none;
+    padding: 0;
+}
+
+.activity-feed li {
+    padding: 10px;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.knowledge-graph {
+    margin-bottom: 20px;
+    border: 1px solid #e5e5e5;
+    padding: 20px;
+}
+
+.scatter-plot {
+    margin-bottom: 20px;
+    border: 1px solid #e5e5e5;
+    padding: 20px;
+}
+
+.heat-map {
+    margin-bottom: 20px;
+    border: 1px solid #e5e5e5;
+    padding: 20px;
+}

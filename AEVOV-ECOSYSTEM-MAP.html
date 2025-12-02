@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aevov Ecosystem - Interactive Map</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            overflow: hidden;
+        }
+        #header {
+            background: rgba(0,0,0,0.3);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid rgba(255,255,255,0.1);
+        }
+        #stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 15px;
+        }
+        .stat { padding: 10px 20px; background: rgba(255,255,255,0.1); border-radius: 10px; }
+        .stat-value { font-size: 24px; font-weight: bold; }
+        .stat-label { font-size: 12px; opacity: 0.8; }
+        #visualization {
+            position: relative;
+            width: 100%;
+            height: calc(100vh - 140px);
+        }
+        svg {
+            width: 100%;
+            height: 100%;
+        }
+        .node {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .node:hover {
+            filter: brightness(1.3);
+        }
+        .link {
+            fill: none;
+            stroke-opacity: 0.3;
+            transition: stroke-opacity 0.3s ease;
+        }
+        .link:hover {
+            stroke-opacity: 0.8;
+        }
+        .node-label {
+            font-size: 11px;
+            pointer-events: none;
+            text-shadow: 0 0 3px rgba(0,0,0,0.8);
+        }
+        #tooltip {
+            position: absolute;
+            padding: 12px;
+            background: rgba(0,0,0,0.9);
+            border-radius: 8px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+            max-width: 300px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .tooltip-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #4fc3f7;
+        }
+        .tooltip-details {
+            font-size: 12px;
+            line-height: 1.6;
+        }
+        #controls {
+            position: absolute;
+            top: 160px;
+            right: 20px;
+            background: rgba(0,0,0,0.5);
+            padding: 15px;
+            border-radius: 10px;
+        }
+        button {
+            display: block;
+            width: 100%;
+            margin: 5px 0;
+            padding: 8px 15px;
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        button:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        .legend {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0,0,0,0.5);
+            padding: 15px;
+            border-radius: 10px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 5px 0;
+            font-size: 12px;
+        }
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="header">
+        <h1>🌟 Aevov Ecosystem - Interactive Map</h1>
+        <p style="opacity: 0.8; margin-top: 10px;">Complete system architecture and relationships</p>
+        <div id="stats">
+            <div class="stat">
+                <div class="stat-value">29</div>
+                <div class="stat-label">Total Plugins</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">97%</div>
+                <div class="stat-label">Pass Rate</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">3</div>
+                <div class="stat-label">Core Plugins</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">25</div>
+                <div class="stat-label">Sister Plugins</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="visualization"></div>
+    <div id="tooltip"></div>
+
+    <div id="controls">
+        <button onclick="resetZoom()">Reset View</button>
+        <button onclick="expandAll()">Expand All</button>
+        <button onclick="collapseAll()">Collapse All</button>
+        <button onclick="togglePhysics()">Toggle Physics</button>
+    </div>
+
+    <div class="legend">
+        <div class="legend-item">
+            <div class="legend-color" style="background: #ff6b6b;"></div>
+            <span>Core Plugins (Main Three)</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #4ecdc4;"></div>
+            <span>Sister Plugins (97% Pass Rate)</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #ffe66d;"></div>
+            <span>New Plugin (Vision Depth)</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #95e1d3;"></div>
+            <span>Testing Framework</span>
+        </div>
+    </div>
+
+    <script>
+        const data = {
+            "name": "Aevov Ecosystem",
+            "type": "root",
+            "description": "Complete WordPress plugin ecosystem",
+            "children": [
+                {
+                    "name": "Core Plugins",
+                    "type": "core",
+                    "description": "The three main plugins that form the foundation",
+                    "children": [
+                        {
+                            "name": "AevovPatternSyncProtocol",
+                            "type": "main",
+                            "tests": "15/15 (100%)",
+                            "description": "Pattern storage, consensus validation, proof of contribution",
+                            "files": "1110 PHP files, 976 classes, 24 database tables"
+                        },
+                        {
+                            "name": "Bloom Pattern Recognition",
+                            "type": "main",
+                            "tests": "14/17 (82.4%)",
+                            "description": "Distributed pattern recognition using tensor analysis",
+                            "files": "46 PHP files, 51 classes, 7 database tables"
+                        },
+                        {
+                            "name": "APS Tools",
+                            "type": "main",
+                            "tests": "15/15 (100%)",
+                            "description": "Management interface for APS and BLOOM integration",
+                            "files": "44 PHP files, 34 classes, 16 database tables"
+                        }
+                    ]
+                },
+                {
+                    "name": "Vision Depth",
+                    "type": "new",
+                    "description": "Privacy-First Behavioral Intelligence System",
+                    "files": "12 core classes, 2500+ lines, AES-256-GCM encryption",
+                    "features": "Ultimate Web Scraper integration, 3 privacy modes, GDPR compliance"
+                },
+                {
+                    "name": "Sister Plugins (97% Pass Rate)",
+                    "type": "sister-perfect",
+                    "description": "25 sister plugins with comprehensive testing",
+                    "children": [
+                        {"name": "aevov-application-forge", "type": "sister", "tests": "8/8 (100%)"},
+                        {"name": "aevov-chat-ui", "type": "sister", "tests": "7/8 (87.5%)"},
+                        {"name": "aevov-chunk-registry", "type": "sister", "tests": "8/8 (100%)"},
+                        {"name": "aevov-cognitive-engine", "type": "sister", "tests": "8/8 (100%)"},
+                        {"name": "aevov-cubbit-cdn", "type": "sister", "tests": "7/8 (87.5%)"},
+                        {"name": "aevov-cubbit-downloader", "type": "sister", "tests": "7/8 (87.5%)"},
+                        {"name": "aevov-demo-system", "type": "sister", "tests": "8/8 (100%)"},
+                        {"name": "aevov-diagnostic-network", "type": "sister", "tests": "8/8 (100%)"},
+                        {"name": "aevov-embedding-engine", "type": "sister", "tests": "8/8 (100%)"},
+                        {"name": "aevov-image-engine", "type": "sister", "tests": "8/8 (100%)"},
+                        {"name": "aevov-language-engine", "type": "sister", "tests": "8/8 (100%)"},
+                        {"name": "aevov-language-engine-v2", "type": "sister", "tests": "8/8 (100%)"},
+                        {"name": "aevov-memory-core", "type": "sister", "tests": "8/8 (100%)"},
+                        {"name": "aevov-music-forge", "type": "sister", "tests": "8/8 (100%)"},
+                        {"name": "aevov-neuro-architect", "type": "sister", "tests": "8/8 (100%)"},
+                        {"name": "aevov-onboarding-system", "type": "sister", "tests": "8/8 (100%)"},
+                        {"name": "aevov-physics-engine", "type": "sister", "tests": "8/8 (100%)"},
+                        {"name": "aevov-playground", "type": "sister", "tests": "7/8 (87.5%)"},
+                        {"name": "aevov-reasoning-engine", "type": "sister", "tests": "7/8 (87.5%)"},
+                        {"name": "aevov-security", "type": "sister", "tests": "8/8 (100%)"},
+                        {"name": "aevov-simulation-engine", "type": "sister", "tests": "8/8 (100%)"},
+                        {"name": "aevov-stream", "type": "sister", "tests": "8/8 (100%)"},
+                        {"name": "aevov-super-app-forge", "type": "sister", "tests": "8/8 (100%)"},
+                        {"name": "aevov-transcription-engine", "type": "sister", "tests": "8/8 (100%)"},
+                        {"name": "bloom-chunk-scanner", "type": "sister", "tests": "7/8 (87.5%)"}
+                    ]
+                },
+                {
+                    "name": "Testing Framework",
+                    "type": "testing",
+                    "description": "Comprehensive testing and validation",
+                    "files": "validate-main-plugins.php, test-sister-plugins.php, AEVOV-ECOSYSTEM-MAP.html"
+                }
+            ]
+        };
+
+        const width = window.innerWidth;
+        const height = window.innerHeight - 140;
+
+        const colorScale = d3.scaleOrdinal()
+            .domain(["root", "core", "main", "new", "testing", "sister-perfect", "sister"])
+            .range(["#ffffff", "#ff6b6b", "#ff6b6b", "#ffe66d", "#95e1d3", "#4ecdc4", "#4ecdc4"]);
+
+        const svg = d3.select("#visualization")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+        const g = svg.append("g");
+
+        const zoom = d3.zoom()
+            .scaleExtent([0.1, 10])
+            .on("zoom", (event) => {
+                g.attr("transform", event.transform);
+            });
+
+        svg.call(zoom);
+
+        const root = d3.hierarchy(data);
+        const treeLayout = d3.tree().size([height - 100, width - 400]);
+        treeLayout(root);
+
+        const link = g.selectAll(".link")
+            .data(root.links())
+            .join("path")
+            .attr("class", "link")
+            .attr("d", d3.linkHorizontal()
+                .x(d => d.y)
+                .y(d => d.x))
+            .attr("stroke", "#fff")
+            .attr("stroke-width", 2);
+
+        const node = g.selectAll(".node")
+            .data(root.descendants())
+            .join("g")
+            .attr("class", "node")
+            .attr("transform", d => `translate(${d.y},${d.x})`)
+            .on("mouseover", showTooltip)
+            .on("mouseout", hideTooltip)
+            .on("click", toggleNode);
+
+        node.append("circle")
+            .attr("r", d => d.depth === 0 ? 20 : (d.children ? 12 : 8))
+            .attr("fill", d => colorScale(d.data.type))
+            .attr("stroke", "#fff")
+            .attr("stroke-width", 2);
+
+        node.append("text")
+            .attr("class", "node-label")
+            .attr("dy", ".35em")
+            .attr("x", d => d.children ? -15 : 15)
+            .style("text-anchor", d => d.children ? "end" : "start")
+            .text(d => d.data.name);
+
+        function showTooltip(event, d) {
+            const tooltip = d3.select("#tooltip");
+            let content = `<div class="tooltip-title">${d.data.name}</div><div class="tooltip-details">`;
+
+            if (d.data.description) content += `<div><strong>Description:</strong> ${d.data.description}</div>`;
+            if (d.data.tests) content += `<div><strong>Tests:</strong> ${d.data.tests}</div>`;
+            if (d.data.files) content += `<div><strong>Files:</strong> ${d.data.files}</div>`;
+            if (d.data.features) content += `<div><strong>Features:</strong> ${d.data.features}</div>`;
+
+            content += '</div>';
+
+            tooltip.html(content)
+                .style("left", (event.pageX + 10) + "px")
+                .style("top", (event.pageY - 10) + "px")
+                .style("opacity", 1);
+        }
+
+        function hideTooltip() {
+            d3.select("#tooltip").style("opacity", 0);
+        }
+
+        function toggleNode(event, d) {
+            if (d.children) {
+                d._children = d.children;
+                d.children = null;
+            } else {
+                d.children = d._children;
+                d._children = null;
+            }
+            update();
+        }
+
+        function update() {
+            treeLayout(root);
+
+            node.transition().duration(750)
+                .attr("transform", d => `translate(${d.y},${d.x})`);
+
+            link.transition().duration(750)
+                .attr("d", d3.linkHorizontal()
+                    .x(d => d.y)
+                    .y(d => d.x));
+        }
+
+        function resetZoom() {
+            svg.transition().duration(750).call(zoom.transform, d3.zoomIdentity);
+        }
+
+        function expandAll() {
+            root.descendants().forEach(d => {
+                if (d._children) {
+                    d.children = d._children;
+                    d._children = null;
+                }
+            });
+            update();
+        }
+
+        function collapseAll() {
+            root.descendants().forEach(d => {
+                if (d.children && d.depth > 0) {
+                    d._children = d.children;
+                    d.children = null;
+                }
+            });
+            update();
+        }
+
+        let physicsEnabled = false;
+        function togglePhysics() {
+            physicsEnabled = !physicsEnabled;
+            alert(physicsEnabled ? "Force physics enabled (feature coming soon)" : "Force physics disabled");
+        }
+
+        // Center the view
+        svg.call(zoom.transform, d3.zoomIdentity.translate(50, 0));
+    </script>
+</body>
+</html>

@@ -1,0 +1,137 @@
+{
+    "name": "aevov/ecosystem",
+    "description": "Advanced AI-powered WordPress plugin ecosystem for pattern recognition, content generation, and intelligent workflows",
+    "type": "wordpress-plugin",
+    "license": "AGPL-3.0-or-later",
+    "version": "1.0.0",
+    "keywords": [
+        "wordpress",
+        "plugin",
+        "ai",
+        "machine-learning",
+        "pattern-recognition",
+        "content-generation",
+        "neurosymbolic"
+    ],
+    "homepage": "https://aevov.dev",
+    "authors": [
+        {
+            "name": "Aevov Development Team",
+            "email": "dev@aevov.dev",
+            "homepage": "https://aevov.dev",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "email": "support@aevov.dev",
+        "issues": "https://github.com/aevov/aevov/issues",
+        "docs": "https://docs.aevov.dev",
+        "source": "https://github.com/aevov/aevov"
+    },
+    "require": {
+        "php": ">=7.4",
+        "ext-json": "*",
+        "ext-mbstring": "*",
+        "ext-mysqli": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5",
+        "phpstan/phpstan": "^1.10",
+        "phpstan/extension-installer": "^1.3",
+        "phpstan/phpstan-strict-rules": "^1.5",
+        "squizlabs/php_codesniffer": "^3.7",
+        "wp-coding-standards/wpcs": "^3.0",
+        "phpcompatibility/phpcompatibility-wp": "^2.1",
+        "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+        "szepeviktor/phpstan-wordpress": "^1.3",
+        "yoast/phpunit-polyfills": "^2.0",
+        "mockery/mockery": "^1.6",
+        "brain/monkey": "^2.6"
+    },
+    "suggest": {
+        "sentry/sentry": "^4.0 - Error tracking and monitoring",
+        "rollbar/rollbar": "^3.0 - Error tracking",
+        "php-parallel-lint/php-parallel-lint": "^1.3 - Fast syntax checking"
+    },
+    "autoload": {
+        "psr-4": {
+            "Aevov\\Core\\": "aevov-core/includes/",
+            "Aevov\\Monitoring\\": ".monitoring/",
+            "Aevov\\Testing\\": "testing/"
+        },
+        "files": [
+            "aevov-core/aevov-core.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Aevov\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": [
+            "@test:unit",
+            "@test:workflow"
+        ],
+        "test:unit": "phpunit --configuration phpunit.xml",
+        "test:workflow": "php testing/workflow-test-runner.php",
+        "test:coverage": "phpunit --configuration phpunit.xml --coverage-html reports/coverage",
+        "lint": [
+            "@lint:php",
+            "@lint:phpcs"
+        ],
+        "lint:php": "parallel-lint --exclude vendor --exclude node_modules .",
+        "lint:phpcs": "phpcs",
+        "lint:fix": "phpcbf",
+        "analyse": "@phpstan",
+        "phpstan": "phpstan analyse --memory-limit=512M",
+        "phpstan:baseline": "phpstan analyse --memory-limit=512M --generate-baseline",
+        "format": "phpcbf",
+        "docs:api": "php api-documentation.php --format=openapi --output=docs/api.json",
+        "profile": "php testing/performance-profiler.php",
+        "post-install-cmd": [
+            "@setup-git-hooks"
+        ],
+        "post-update-cmd": [
+            "@setup-git-hooks"
+        ],
+        "setup-git-hooks": [
+            "[ -d .git ] && git config core.hooksPath .githooks || true"
+        ],
+        "pre-commit": [
+            "@lint",
+            "@analyse"
+        ],
+        "pre-push": [
+            "@test"
+        ]
+    },
+    "scripts-descriptions": {
+        "test": "Run all tests (unit and workflow)",
+        "test:unit": "Run PHPUnit unit tests",
+        "test:workflow": "Run workflow integration tests",
+        "test:coverage": "Run tests with code coverage report",
+        "lint": "Run all linters",
+        "lint:php": "Check PHP syntax",
+        "lint:phpcs": "Check coding standards with PHPCS",
+        "lint:fix": "Auto-fix coding standards issues",
+        "analyse": "Run static analysis with PHPStan",
+        "phpstan": "Run PHPStan analysis",
+        "phpstan:baseline": "Generate PHPStan baseline",
+        "format": "Format code to match coding standards",
+        "docs:api": "Generate API documentation",
+        "profile": "Run performance profiler",
+        "setup-git-hooks": "Setup Git hooks for pre-commit and pre-push"
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "phpstan/extension-installer": true
+        },
+        "sort-packages": true,
+        "optimize-autoloader": true,
+        "preferred-install": "dist"
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

@@ -1,0 +1,262 @@
+version: '3.8'
+
+# ============================================================================
+# Aevov Development Environment
+# ============================================================================
+# Complete Docker setup for developing and testing the Aevov ecosystem
+#
+# Services:
+#   - wordpress: WordPress with all Aevov plugins
+#   - mysql: MySQL 8.0 database
+#   - redis: Redis for caching
+#   - phpmyadmin: Database management UI
+#
+# Usage:
+#   docker-compose up -d        # Start all services
+#   docker-compose down         # Stop all services
+#   docker-compose logs -f      # View logs
+#   docker-compose exec wordpress bash  # Access WordPress container
+#
+# Access URLs:
+#   - WordPress: http://localhost:8080
+#   - phpMyAdmin: http://localhost:8081
+#   - WordPress Admin: http://localhost:8080/wp-admin (admin/admin)
+# ============================================================================
+
+services:
+  # ==========================================================================
+  # MySQL Database
+  # ==========================================================================
+  mysql:
+    image: mysql:8.0
+    container_name: aevov-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpassword}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-wordpress}
+      MYSQL_USER: ${MYSQL_USER:-wordpress}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-wordpress}
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./docker/mysql-init:/docker-entrypoint-initdb.d
+    ports:
+      - "${MYSQL_PORT:-3306}:3306"
+    networks:
+      - aevov-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-rootpassword}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    command: >
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --max_connections=1000
+      --innodb_buffer_pool_size=512M
+
+  # ==========================================================================
+  # Redis Cache
+  # ==========================================================================
+  redis:
+    image: redis:7-alpine
+    container_name: aevov-redis
+    restart: unless-stopped
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - aevov-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+
+  # ==========================================================================
+  # WordPress with Aevov Plugins
+  # ==========================================================================
+  wordpress:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: aevov-wordpress
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      # WordPress Configuration
+      WORDPRESS_DB_HOST: mysql:3306
+      WORDPRESS_DB_NAME: ${MYSQL_DATABASE:-wordpress}
+      WORDPRESS_DB_USER: ${MYSQL_USER:-wordpress}
+      WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD:-wordpress}
+      WORDPRESS_TABLE_PREFIX: ${WORDPRESS_TABLE_PREFIX:-wp_}
+
+      # WordPress Debug Settings
+      WORDPRESS_DEBUG: ${WORDPRESS_DEBUG:-true}
+      WORDPRESS_DEBUG_LOG: ${WORDPRESS_DEBUG_LOG:-true}
+      WORDPRESS_DEBUG_DISPLAY: ${WORDPRESS_DEBUG_DISPLAY:-true}
+
+      # Redis Configuration
+      WP_REDIS_HOST: redis
+      WP_REDIS_PORT: 6379
+
+      # PHP Configuration
+      PHP_MEMORY_LIMIT: ${PHP_MEMORY_LIMIT:-512M}
+      PHP_MAX_EXECUTION_TIME: ${PHP_MAX_EXECUTION_TIME:-300}
+      PHP_UPLOAD_MAX_FILESIZE: ${PHP_UPLOAD_MAX_FILESIZE:-64M}
+      PHP_POST_MAX_SIZE: ${PHP_POST_MAX_SIZE:-64M}
+    volumes:
+      # Mount all Aevov plugins
+      - ./aevov-core:/var/www/html/wp-content/plugins/aevov-core
+      - ./aevov-application-forge:/var/www/html/wp-content/plugins/aevov-application-forge
+      - ./aevov-chat-ui:/var/www/html/wp-content/plugins/aevov-chat-ui
+      - ./aevov-chunk-registry:/var/www/html/wp-content/plugins/aevov-chunk-registry
+      - ./aevov-cognitive-engine:/var/www/html/wp-content/plugins/aevov-cognitive-engine
+      - ./aevov-cubbit-cdn:/var/www/html/wp-content/plugins/aevov-cubbit-cdn
+      - ./aevov-cubbit-downloader:/var/www/html/wp-content/plugins/aevov-cubbit-downloader
+      - ./aevov-demo-system:/var/www/html/wp-content/plugins/aevov-demo-system
+      - ./aevov-diagnostic-network:/var/www/html/wp-content/plugins/aevov-diagnostic-network
+      - ./aevov-embedding-engine:/var/www/html/wp-content/plugins/aevov-embedding-engine
+      - ./aevov-image-engine:/var/www/html/wp-content/plugins/aevov-image-engine
+      - ./aevov-language-engine:/var/www/html/wp-content/plugins/aevov-language-engine
+      - ./aevov-language-engine-v2:/var/www/html/wp-content/plugins/aevov-language-engine-v2
+      - ./aevov-memory-core:/var/www/html/wp-content/plugins/aevov-memory-core
+      - ./aevov-music-forge:/var/www/html/wp-content/plugins/aevov-music-forge
+      - ./aevov-neuro-architect:/var/www/html/wp-content/plugins/aevov-neuro-architect
+      - ./aevov-onboarding-system:/var/www/html/wp-content/plugins/aevov-onboarding-system
+      - ./aevov-physics-engine:/var/www/html/wp-content/plugins/aevov-physics-engine
+      - ./aevov-playground:/var/www/html/wp-content/plugins/aevov-playground
+      - ./aevov-reasoning-engine:/var/www/html/wp-content/plugins/aevov-reasoning-engine
+      - ./aevov-security:/var/www/html/wp-content/plugins/aevov-security
+      - ./aevov-simulation-engine:/var/www/html/wp-content/plugins/aevov-simulation-engine
+      - ./aevov-stream:/var/www/html/wp-content/plugins/aevov-stream
+      - ./aevov-super-app-forge:/var/www/html/wp-content/plugins/aevov-super-app-forge
+      - ./aevov-testing-framework:/var/www/html/wp-content/plugins/aevov-testing-framework
+      - ./aevov-transcription-engine:/var/www/html/wp-content/plugins/aevov-transcription-engine
+      - ./aevov-unified-dashboard:/var/www/html/wp-content/plugins/aevov-unified-dashboard
+      - ./aevov-vision-depth:/var/www/html/wp-content/plugins/aevov-vision-depth
+      - ./aps-tools:/var/www/html/wp-content/plugins/aps-tools
+      - ./bloom-chunk-scanner:/var/www/html/wp-content/plugins/bloom-chunk-scanner
+      - ./bloom-pattern-recognition:/var/www/html/wp-content/plugins/bloom-pattern-recognition
+      - ./AevovPatternSyncProtocol:/var/www/html/wp-content/plugins/AevovPatternSyncProtocol
+      - ./aevov-workflow-engine:/var/www/html/wp-content/plugins/aevov-workflow-engine
+      - ./AROS:/var/www/html/wp-content/plugins/AROS
+
+      # Mount testing framework
+      - ./testing:/var/www/html/wp-content/testing
+
+      # WordPress data persistence
+      - wordpress_data:/var/www/html
+
+      # Custom PHP configuration
+      - ./docker/php.ini:/usr/local/etc/php/conf.d/custom.ini
+    ports:
+      - "${WORDPRESS_PORT:-8080}:80"
+    networks:
+      - aevov-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  # ==========================================================================
+  # phpMyAdmin - Database Management
+  # ==========================================================================
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: aevov-phpmyadmin
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpassword}
+      UPLOAD_LIMIT: 64M
+    ports:
+      - "${PHPMYADMIN_PORT:-8081}:80"
+    networks:
+      - aevov-network
+
+  # ==========================================================================
+  # Aevov Workflow Engine (Standalone Next.js UI)
+  # ==========================================================================
+  workflow-engine:
+    build:
+      context: ./aevov-workflow-engine
+      dockerfile: Dockerfile.standalone
+    container_name: aevov-workflow-engine
+    restart: unless-stopped
+    depends_on:
+      wordpress:
+        condition: service_healthy
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8080/wp-json/aevov-workflow/v1
+      NODE_ENV: development
+    ports:
+      - "${WORKFLOW_ENGINE_PORT:-3000}:3000"
+    volumes:
+      - ./aevov-workflow-engine/src:/app/src
+    networks:
+      - aevov-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  # ==========================================================================
+  # WP-CLI Container (for running commands)
+  # ==========================================================================
+  wpcli:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: aevov-wpcli
+    depends_on:
+      wordpress:
+        condition: service_healthy
+    environment:
+      WORDPRESS_DB_HOST: mysql:3306
+      WORDPRESS_DB_NAME: ${MYSQL_DATABASE:-wordpress}
+      WORDPRESS_DB_USER: ${MYSQL_USER:-wordpress}
+      WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD:-wordpress}
+    volumes:
+      - wordpress_data:/var/www/html
+      - ./:/workspace
+    networks:
+      - aevov-network
+    entrypoint: /bin/bash
+    command: -c "sleep infinity"
+    profiles:
+      - tools
+
+# ============================================================================
+# Volumes
+# ============================================================================
+volumes:
+  mysql_data:
+    driver: local
+  redis_data:
+    driver: local
+  wordpress_data:
+    driver: local
+
+# ============================================================================
+# Networks
+# ============================================================================
+networks:
+  aevov-network:
+    driver: bridge
