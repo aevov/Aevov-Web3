@@ -2,7 +2,7 @@
 
 <div align="center">
 
-<img src="assets/aevov-logo.svg" alt="Aevov Logo" width="200" />
+<img src="[assets/aevov-logo.svg](https://github.com/aevov/aev-dev/blob/main/aevov-logo-abstract-vertex.svg)" alt="Aevov Logo" width="200" />
 
 ### The Decentralized AI Operating System for Web3
 
@@ -35,7 +35,7 @@ Aevov is a **decentralized AI operating system** that puts you in control. It's 
 
 - **Self-Sovereign AI**: Run AI models on your own infrastructure
 - **Data Ownership**: Your data stays yours, stored in decentralized networks
-- **Tokenized Incentives**: Earn AevCoin for contributing compute, storage, and patterns
+- **Tokenized Incentives**: Earn AevCoin for contributing compute, storage, and patterns (pending integration)
 - **Mesh Networking**: Peer-to-peer connectivity without corporate intermediaries
 - **Pattern Economy**: Trade and monetize AI patterns in a decentralized marketplace
 
@@ -106,9 +106,9 @@ Seven specialized AI engines, each designed for distributed operation:
 | **Embedding Engine** | Vector embeddings, semantic search | 0.001 AEV/embed |
 | **Neuro-Architect** | Neural network design | 0.50 AEV/architecture |
 
-### AevCoin Economy
+### AevCoin Economy (pending integration)
 
-AevCoin (AEV) powers the Aevov ecosystem:
+AevCoin (AEV) powers the Aevov ecosystem (pending integration):
 
 ```
 ┌────────────────────────────────────────────────────────────────┐
@@ -270,7 +270,7 @@ wp plugin activate aevov-core aevov-ai-core aevov-meshcore --allow-root
 
 1. **Access Dashboard**: Navigate to `Aevov Dashboard` in WordPress admin
 2. **Connect to Mesh**: Enable Meshcore and discover peers
-3. **Configure Wallet**: Set up your AevCoin wallet address
+3. **Configure Wallet**: Set up your AevCoin wallet address (pending integration)
 4. **Start Earning**: Contribute compute/storage to earn rewards
 
 ---
