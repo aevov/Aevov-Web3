@@ -475,7 +475,7 @@ For new API endpoints:
 - **GitHub Issues**: Bug reports and feature requests
 - **GitHub Discussions**: Questions and community discussions
 - **Discord**: Real-time chat and collaboration
-- **Email**: For private matters: maintainers@aevov.dev
+- **Email**: For private matters: jesse@aevov.ai
 
 ### Getting Help
 
