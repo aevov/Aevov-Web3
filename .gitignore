@@ -1,5 +1,5 @@
 /.fuse_hidden000000ef00000001
-/.kilocodemodes
+
 # Ignore specific WordPress database file types
 db_data/wordpress_db/*.ibd
 db_data/wordpress_db/*.frm
