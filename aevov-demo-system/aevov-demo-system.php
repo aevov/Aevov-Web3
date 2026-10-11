@@ -32,7 +32,7 @@ class AevovDemoSystem {
     
     private $plugin_dependencies = [
         'aps-tools/aps-tools.php' => 'APS Tools',
-        'bloom-pattern-recognition/bloom-pattern-system.php' => 'BLOOM Pattern Recognition',
+        'bloom-pattern-recognition/class-bloom-pattern-system.php' => 'BLOOM Pattern Recognition',
         'AevovPatternSyncProtocol/aevov-pattern-sync-protocol.php' => 'Aevov Pattern Sync Protocol',
         'aevov-onboarding-system/aevov-onboarding.php' => 'Aevov Onboarding System',
         'aevov-diagnostic-network/aevov-diagnostic-network.php' => 'Aevov Diagnostic Network'

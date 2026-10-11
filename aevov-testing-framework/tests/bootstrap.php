@@ -48,7 +48,7 @@ require_once ABSPATH . 'wp-content/plugins/bloom-pattern-recognition/includes/co
 // Activate necessary plugins
 $plugins_to_activate = [
     'aevov-demo-system/aevov-demo-system.php',
-    'bloom-pattern-recognition/bloom-pattern-system.php',
+    'bloom-pattern-recognition/class-bloom-pattern-system.php',
     'aps-tools/aps-tools.php',
     'aevov-onboarding-system/aevov-onboarding.php',
     'AevovPatternSyncProtocol/aevov-pattern-sync-protocol.php',

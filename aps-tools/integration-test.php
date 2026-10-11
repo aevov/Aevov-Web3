@@ -289,7 +289,7 @@ class APS_Integration_Test {
     
     private function test_bloom_plugin_active() {
         return class_exists('BLOOM\\Core\\Plugin') || 
-               is_plugin_active('bloom-pattern-recognition/bloom-pattern-system.php');
+               is_plugin_active('bloom-pattern-recognition/class-bloom-pattern-system.php');
     }
     
     private function test_tensor_processing() {

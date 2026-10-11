@@ -145,7 +145,7 @@ class DiagnosticNetwork {
                 'type' => 'engine',
                 'group' => 'processing',
                 'class' => 'BLOOM\\Core',
-                'file' => 'bloom-pattern-recognition/bloom-pattern-system.php', // Corrected path
+                'file' => 'bloom-pattern-recognition/class-bloom-pattern-system.php', // Corrected path
                 'dependencies' => [],
                 'tests' => ['plugin_activation', 'pattern_processing', 'tensor_operations']
             ],

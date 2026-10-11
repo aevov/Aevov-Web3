@@ -95,7 +95,7 @@ final class APS_Plugin {
         // Method 4: Check if plugin is active
         if (function_exists('is_plugin_active')) {
             $possible_paths = [
-                'bloom-pattern-recognition/bloom-pattern-system.php',
+                'bloom-pattern-recognition/class-bloom-pattern-system.php',
                 'bloom-pattern-recognition/bloom-pattern-recognition.php',
                 'bloom-pattern-recognition/index.php'
             ];
@@ -110,7 +110,7 @@ final class APS_Plugin {
         // Method 5: Check if plugin files exist and are loaded (only if WP_PLUGIN_DIR is defined)
         if (defined('WP_PLUGIN_DIR')) {
             $possible_files = [
-                WP_PLUGIN_DIR . '/bloom-pattern-recognition/bloom-pattern-system.php',
+                WP_PLUGIN_DIR . '/bloom-pattern-recognition/class-bloom-pattern-system.php',
                 WP_PLUGIN_DIR . '/bloom-pattern-recognition/bloom-pattern-recognition.php',
                 WP_PLUGIN_DIR . '/bloom-pattern-recognition/index.php'
             ];

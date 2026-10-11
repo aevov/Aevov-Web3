@@ -215,11 +215,12 @@ Distributed pattern recognition and synchronization:
 | `aevov-security-monitor` | Threat detection, auditing |
 | `aevov-runtime` | Sandboxed execution environment |
 
-### Pattern Recognition (2)
+### Pattern Recognition (3)
 | Plugin | Description |
 |--------|-------------|
 | `aps-tools` | Pattern management utilities |
 | `aevov-chunk-scanner` | Pattern analysis and extraction |
+| `aevov-senton-field` | Phase-coupled senton lattice — **SSAL-licensed, not AGPL** (see [License](#license)) |
 
 ### Specialized Processing (4)
 | Plugin | Description |
@@ -484,6 +485,8 @@ Join the decentralized AI revolution:
 GNU Affero General Public License v3.0 - see [LICENSE](LICENSE)
 
 **Why AGPL?** We believe in open source, but also in ensuring that improvements to the network benefit everyone. AGPL ensures that any modifications to Aevov used in a network service are shared back with the community.
+
+**One carve-out.** `aevov-senton-field/` is **not** AGPL. It is licensed under the Aevov Sovereign Source-Available License (SSAL) v1.0 — full text and application note in [aevov-senton-field/LICENSE](aevov-senton-field/LICENSE). Every file in that directory carries the SSAL header, and the root [LICENSE](LICENSE) states the carve-out explicitly. SSAL permits viewing, auditing and internal non-commercial use inside an authorised AevOS mesh environment; it forbids redistribution, derivative works, porting outside AevOS, and commercial use. Where this repository is installed as a whole, the more restrictive terms govern that one directory. Do not copy those files into an AGPL build and do not relicense them.
 
 ---
 

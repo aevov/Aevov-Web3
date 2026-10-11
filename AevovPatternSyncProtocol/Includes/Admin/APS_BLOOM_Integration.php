@@ -72,7 +72,7 @@ class APS_BLOOM_Integration {
         }
         
         return function_exists('is_plugin_active') && 
-               is_plugin_active('bloom-pattern-recognition/bloom-pattern-system.php');
+               is_plugin_active('bloom-pattern-recognition/class-bloom-pattern-system.php');
     }
     
     /**

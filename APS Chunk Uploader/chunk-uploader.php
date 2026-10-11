@@ -84,7 +84,7 @@ class ChunkUploaderPlugin {
         // Method 2: Check if plugin is active (try multiple possible paths)
         if (!$bloom_active && function_exists('is_plugin_active')) {
             $possible_paths = [
-                'bloom-pattern-recognition/bloom-pattern-system.php',
+                'bloom-pattern-recognition/class-bloom-pattern-system.php',
                 'bloom-pattern-recognition/bloom-pattern-recognition.php',
                 'bloom-pattern-recognition/index.php'
             ];
@@ -100,7 +100,7 @@ class ChunkUploaderPlugin {
         // Method 3: Check if plugin files exist and are loaded
         if (!$bloom_active) {
             $possible_files = [
-                WP_PLUGIN_DIR . '/bloom-pattern-recognition/bloom-pattern-system.php',
+                WP_PLUGIN_DIR . '/bloom-pattern-recognition/class-bloom-pattern-system.php',
                 WP_PLUGIN_DIR . '/bloom-pattern-recognition/bloom-pattern-recognition.php',
                 WP_PLUGIN_DIR . '/bloom-pattern-recognition/index.php'
             ];
@@ -153,7 +153,7 @@ class ChunkUploaderPlugin {
         
         // Check if BLOOM plugin files exist
         $bloom_files = [
-            WP_PLUGIN_DIR . '/bloom-pattern-recognition/bloom-pattern-system.php',
+            WP_PLUGIN_DIR . '/bloom-pattern-recognition/class-bloom-pattern-system.php',
             WP_PLUGIN_DIR . '/bloom-pattern-recognition/bloom-pattern-recognition.php',
             WP_PLUGIN_DIR . '/bloom-pattern-recognition/index.php'
         ];

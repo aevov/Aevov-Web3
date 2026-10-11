@@ -22,7 +22,7 @@ require_once __DIR__ . '/includes/class-workflow-deployment.php';
 class AevovOnboardingSystem {
     private $plugin_dependencies = [
         'aps-tools/aps-tools.php' => 'APS Tools',
-        'bloom-pattern-recognition/bloom-pattern-system.php' => 'BLOOM Pattern Recognition',
+        'bloom-pattern-recognition/class-bloom-pattern-system.php' => 'BLOOM Pattern Recognition',
         'AevovPatternSyncProtocol/aevov-pattern-sync-protocol.php' => 'Aevov Pattern Sync Protocol',
         'bloom-chunk-scanner/bloom-chunk-scanner.php' => 'BLOOM Chunk Scanner',
         'APS Chunk Uploader/chunk-uploader.php' => 'APS Chunk Uploader',

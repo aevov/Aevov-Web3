@@ -13,6 +13,25 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+--------------------------------------------------------------------------------
+CARVE-OUT — one directory in this tree is NOT under the AGPL.
+
+aevov-senton-field/ is licensed under the Aevov Sovereign Source-Available
+License (SSAL) v1.0, whose full text and application note are in
+aevov-senton-field/LICENSE. Everything that directory contains — its PHP,
+assets, templates, uninstall handler, BOUNDARY.md and the encoded model-tuning
+table — is SSAL, not AGPL. The AGPL grant above does not reach it: SSAL §3
+forbids redistribution, sublicensing, sale, derivative works, porting to a
+non-AevOS environment, and commercial use.
+
+Where the two overlap in one install, the more restrictive terms govern the SSAL
+component. Do not copy those files into an AGPL-licensed build, and do not
+relicense them. The rest of this repository is unchanged: AGPL-3.0 or later.
+
+The SSAL component is listed in aevov-unified-dashboard's plugin registry; that
+listing is an index entry, not a licensing statement.
+--------------------------------------------------------------------------------
+
 GNU AFFERO GENERAL PUBLIC LICENSE
 Version 3, 19 November 2007
 

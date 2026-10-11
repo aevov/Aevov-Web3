@@ -1,0 +1,149 @@
+.aevov-senton-field .aevov-senton-lede {
+    max-width: 62ch;
+    font-size: 14px;
+    color: #475569;
+}
+
+.aevov-senton-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+}
+
+.aevov-senton-card {
+    background: #fff;
+    border: 1px solid #d9dee6;
+    border-radius: 8px;
+    padding: 16px 18px;
+}
+
+.aevov-senton-card h2 {
+    margin-top: 0;
+    font-size: 14px;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: #334155;
+}
+
+.aevov-senton-canvas-card canvas {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    background: #0f172a;
+    border-radius: 8px;
+}
+
+.aevov-senton-stats {
+    border-collapse: collapse;
+    margin-bottom: 12px;
+}
+
+.aevov-senton-stats th {
+    text-align: left;
+    font-weight: 600;
+    color: #64748b;
+    padding: 3px 18px 3px 0;
+    width: 120px;
+}
+
+.aevov-senton-stats td {
+    padding: 3px 0;
+    font-variant-numeric: tabular-nums;
+}
+
+.aevov-senton-stats td.sf-up { color: #0f766e; }
+.aevov-senton-stats td.sf-down { color: #b91c1c; }
+
+.aevov-senton-mono {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12px;
+    word-break: break-all;
+}
+
+.aevov-senton-caption {
+    font-size: 12px;
+    color: #64748b;
+}
+
+.aevov-senton-subhead {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #64748b;
+    margin: 14px 0 6px;
+}
+
+.aevov-senton-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 10px;
+    padding: 0;
+    list-style: none;
+}
+
+.aevov-senton-badges li {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid #d9dee6;
+    border-radius: 999px;
+    padding: 3px 10px;
+    font-size: 12px;
+}
+
+.aevov-senton-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #cbd5e1;
+}
+
+.aevov-senton-badges .is-on .aevov-senton-dot { background: #16a34a; }
+.aevov-senton-badges .is-off { color: #94a3b8; }
+
+.aevov-senton-out {
+    background: #0f172a;
+    color: #e2e8f0;
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 12px;
+    min-height: 42px;
+    overflow-x: auto;
+}
+
+.aevov-senton-field textarea,
+.aevov-senton-field input[type="number"] {
+    width: 100%;
+    max-width: 340px;
+}
+
+.aevov-senton-boundary {
+    grid-column: 1 / -1;
+    border-left: 3px solid #22d3ee;
+}
+
+.aevov-senton-cols {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 18px;
+}
+
+.aevov-senton-boundary h3 {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #475569;
+}
+
+.aevov-senton-boundary ul {
+    margin: 0;
+    padding-left: 18px;
+    list-style: disc;
+}
+
+.aevov-senton-boundary li {
+    margin-bottom: 4px;
+    font-size: 13px;
+}

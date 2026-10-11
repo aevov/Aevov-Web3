@@ -1,0 +1,88 @@
+AEVOV SOVEREIGN SOURCE-AVAILABLE LICENSE (SSAL)
+
+Note: License Terms will be adjusted in the future with less restrictive terms for wider adoption!
+
+Version 1.0, March 2026
+
+Copyright (C) 2026 Aevov Organization. All rights reserved.
+
+---
+APPLICATION NOTE — read this first; it does not modify the terms below.
+
+The SSAL text that follows is reproduced verbatim from the licence published at
+github.com/aevov/cr8oskernel, and its clauses were drafted for the CR8OS Kernel.
+Applied to this work, the operative provisions are Section 2 (Grant of Rights) and
+Section 3 (Restrictions), which are generic to any work. Section 4 names the
+"Blackwell-QP" anyonic protocol and "Merkle-Shard" storage logic, which are kernel
+components and do not exist in this plugin; Section 4 is asserted here only for its
+anti-decoupling intent, and no such claim is made about this work.
+
+The licensed work is: Aevov Senton Field ("the Software"), the directory
+aevov-senton-field/ and the files within it, together with the tuning table in
+includes/class-senton-tuning.php. The rest of the Aevov-Web3 repository remains under
+GNU Affero General Public License v3.0; see LICENSE and README.md at the repository root.
+
+Anyone exercising the Section 2(a) audit right should know: the numeric tuning
+constants in this plugin are deliberately encoded rather than written in place. They
+are decodable, and decoding them is permitted — it is exactly the audit Section 2(a)
+contemplates. The encoding is there to stop a drive-by copy-paste from getting a
+tuned model, not to hide anything from an auditor. The restriction that actually
+protects this work is Section 3, and it is a legal restriction, not a technical one.
+
+One ambiguity is recorded rather than resolved silently. Section 3(b) forbids porting to
+"any non-AevOS kernels, including but not limited to the Linux Kernel or BSD-based
+systems"; that clause was drafted for a kernel. Read literally against a PHP plugin it
+would forbid the ordinary operating system a mesh node runs on, which would empty
+Section 2(b) of content. The intended scope here is the *software stack*: shipping or
+re-targeting this field into a non-AevOS plugin set, host framework or product is the
+prohibited act, in any operating system. If your intended use is not clearly permitted
+by that reading, treat Section 3 as controlling and request written consent from the
+Aevov Organization before doing it.
+---
+
+1. PREAMBLE
+This License governs the use, copying, and distribution of the Aevov Senton Field
+("the Software"). The Software is a specialized Quantum Native implementation designed
+exclusively for the AevOS ecosystem. By accessing the Software, you agree to be bound
+by the terms of this License.
+
+2. GRANT OF RIGHTS
+The Aevov Organization hereby grants you a personal, non-exclusive, non-transferable,
+and limited right to:
+(a) View and audit the source code for the purpose of verifying "Quantum Native"
+    integrity.
+(b) Reproduce and use the Software solely for internal, non-commercial development
+    within the authorized AevOS mesh environments.
+
+3. RESTRICTIONS
+You shall NOT, without explicit written consent from the Aevov Organization:
+(a) Redistribute, sublicense, or sell the Software or any derivative works.
+(b) Port, migrate, or adapt the Software to any non-AevOS kernels, including but not
+    limited to the Linux Kernel or BSD-based systems.
+(c) Modify the Software for use in production environments outside of the Aevov
+    Sovereign Mesh.
+(d) Use the Software in any commercial application or service.
+
+4. SOVEREIGNTY & EXCLUSIVITY
+The Software is intended to be a "Sovereign" implementation. Any attempt to decouple
+the "Blackwell-QP" anyonic protocol or "Merkle-Shard" storage logic for use in
+external, silicon-only operating systems is a violation of this License.
+
+5. NO WARRANTY
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
+CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+6. TERMINATION
+This License and the rights granted hereunder will terminate automatically upon any
+breach by you of its terms.
+
+7. GOVERNING LAW
+Any legal action or proceeding related to this License shall be governed by the laws of
+the jurisdiction in which the Aevov Organization is registered.
+
+---
+*CR8OS: THE SOVEREIGN QUANTUM NATIVE STANDARD.*

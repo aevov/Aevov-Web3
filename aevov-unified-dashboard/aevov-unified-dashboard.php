@@ -44,7 +44,7 @@ class UnifiedDashboard {
     private static $instance = null;
 
     /**
-     * All 29 Aevov Plugins
+     * All 30 Aevov Plugins
      */
     private $all_plugins = [
         // Core 3 Plugins
@@ -60,7 +60,7 @@ class UnifiedDashboard {
             ],
             'bloom-pattern-recognition' => [
                 'name' => 'Bloom Pattern Recognition',
-                'file' => 'bloom-pattern-recognition/bloom-pattern-system.php',
+                'file' => 'bloom-pattern-recognition/class-bloom-pattern-system.php',
                 'description' => 'Advanced AI pattern recognition and neural processing',
                 'icon' => '🧠',
                 'category' => 'Core System',
@@ -78,7 +78,7 @@ class UnifiedDashboard {
             ]
         ],
 
-        // Sister Plugins (26 total)
+        // Sister Plugins (27 total)
         'sister' => [
             'aevov-application-forge' => [
                 'name' => 'Application Forge',
@@ -239,6 +239,14 @@ class UnifiedDashboard {
                 'icon' => '🔒',
                 'category' => 'Infrastructure',
                 'features' => ['Security', 'Encryption', 'Protection']
+            ],
+            'aevov-senton-field' => [
+                'name' => 'Senton Field',
+                'file' => 'aevov-senton-field/aevov-senton-field.php',
+                'description' => 'Experiential phase-coupled lattice — the paradigm to stand in front of, without the organism',
+                'icon' => '🌀',
+                'category' => 'AI Engines',
+                'features' => ['Phase Lattice', 'Coherence', 'Delta-m', 'Mesh Coupling']
             ],
             'aevov-simulation-engine' => [
                 'name' => 'Simulation Engine',

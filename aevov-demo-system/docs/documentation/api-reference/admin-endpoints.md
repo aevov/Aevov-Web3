@@ -339,7 +339,7 @@ Retrieves detailed information about the WordPress and server environment.
         "is_multisite": true,
         "active_plugins": [
             "aevov-pattern-sync-protocol/aevov-pattern-sync-protocol.php",
-            "bloom-pattern-recognition/bloom-pattern-system.php"
+            "bloom-pattern-recognition/class-bloom-pattern-system.php"
         ],
         "memory_limit": "256M",
         "max_execution_time": "300",
