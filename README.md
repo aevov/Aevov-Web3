@@ -10,8 +10,9 @@
 
 [![Version](https://img.shields.io/badge/version-1.0.0-blue?style=for-the-badge)](https://github.com/aevov/aevov)
 [![License](https://img.shields.io/badge/license-AGPL--3.0-green?style=for-the-badge)](LICENSE)
-[![Plugins](https://img.shields.io/badge/plugins-34-purple?style=for-the-badge)](#plugin-ecosystem)
-[![Tests](https://img.shields.io/badge/tests-2655%20passing-brightgreen?style=for-the-badge)](#testing)
+[![Senton Field license](https://img.shields.io/badge/aevov--senton--field-SSAL--1.0-orange?style=for-the-badge)](aevov-senton-field/LICENSE)
+[![Plugins](https://img.shields.io/badge/plugins-41-purple?style=for-the-badge)](#plugin-ecosystem)
+[![Tests](https://img.shields.io/badge/tests-2816%20passing-brightgreen?style=for-the-badge)](#testing)
 
 [Whitepaper](white-paper.md) | [Web4 Architecture](AEVOV-WEB4-ARCHITECTURE-PAPER.md) | [Quick Start](#quick-start) | [Documentation](#documentation)
 
@@ -31,7 +32,7 @@ Web2 gave us platforms. Web3 gave us tokens. But AI remained locked in walled ga
 
 ## The Solution: Aevov
 
-Aevov is a **decentralized AI operating system** that puts you in control. It's not just another AI tool - it's a complete ecosystem of 34 interconnected plugins that work together to provide:
+Aevov is a **decentralized AI operating system** that puts you in control. It's not just another AI tool - it's a complete ecosystem of 41 interconnected plugins that work together to provide:
 
 - **Self-Sovereign AI**: Run AI models on your own infrastructure
 - **Data Ownership**: Your data stays yours, stored in decentralized networks
@@ -153,7 +154,9 @@ Distributed pattern recognition and synchronization:
 
 ## Plugin Ecosystem
 
-**34 plugins** working together as a unified decentralized AI operating system:
+**41 plugins** working together as a unified decentralized AI operating system:
+
+*Counted as one plugin each: every top-level directory whose main PHP file declares a WordPress `Plugin Name:` header. `Cubbit DS3/` is excluded because its header sits below the top level, and `testing/` because it is a harness copy rather than a shippable plugin. The unified dashboard registers 30 of these as its own cards — a curated subset, not this total.*
 
 ### Core Infrastructure (2)
 | Plugin | Description |
@@ -215,19 +218,22 @@ Distributed pattern recognition and synchronization:
 | `aevov-security-monitor` | Threat detection, auditing |
 | `aevov-runtime` | Sandboxed execution environment |
 
-### Pattern Recognition (3)
+### Pattern Sync & Recognition (5)
 | Plugin | Description |
 |--------|-------------|
+| `AevovPatternSyncProtocol` | Core pattern synchronization and analysis |
 | `aps-tools` | Pattern management utilities |
-| `aevov-chunk-scanner` | Pattern analysis and extraction |
+| `bloom-chunk-scanner` | Scans the Media Library for BLOOM JSON chunks |
+| `APS Chunk Uploader` | Chunk validation and model selection in the media uploader |
 | `aevov-senton-field` | Phase-coupled senton lattice — **SSAL-licensed, not AGPL** (see [License](#license)) |
 
-### Specialized Processing (4)
+### Specialized Processing (8)
 | Plugin | Description |
 |--------|-------------|
 | `aevov-music-forge` | AI music generation |
 | `aevov-simulation-engine` | Scenario simulation |
 | `aevov-physics-engine` | Physics calculations |
+| `AROS` | Self-improving robot operating system on the physics and spatial engines |
 | `aevov-demo-system` | Interactive showcases |
 | `aevov-onboarding-system` | User onboarding flows |
 | `aevov-playground` | Testing environment |
@@ -315,7 +321,7 @@ wp plugin activate aevov-core aevov-ai-core aevov-meshcore --allow-root
 
 **Features:**
 - Natural language workflow generation
-- Full context awareness of all 34 plugins
+- Full context awareness of all 41 plugins
 - Real-time database synchronization
 - Automatic rollback on failures
 - 24 pre-built workflow templates
@@ -428,9 +434,9 @@ php testing/performance-profiler.php
 ```
 
 **Test Coverage:**
-- 2,655 workflow tests (100% passing)
-- 90%+ code coverage
-- PHPStan Level 6
+- 2,816 workflow tests, 100% passing — measured by CI (run `38150499612`) identically across all 12 PHP × WordPress matrices
+- Static analysis at PHPStan level 6, over the paths listed in `phpstan.neon` (`aevov-senton-field/` is not yet among them)
+- Code coverage is **not** currently measured: the coverage job's PHPUnit invocation ends in `|| true` and uploads an empty report, so this README publishes no coverage figure until one exists
 
 ---
 

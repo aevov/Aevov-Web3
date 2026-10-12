@@ -389,28 +389,50 @@ jobs:
     if: github.ref == 'refs/heads/main'
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - name: Download test results
+        uses: actions/download-artifact@v4
+        with:
+          pattern: test-results-*
+          path: results
 
-      - name: Create badges
+      - name: Publish measured summary
         run: |
-          mkdir -p .github/badges
+          set -euo pipefail
 
-          # Create test status badge
-          echo '{"schemaVersion":1,"label":"tests","message":"passing","color":"success"}' \
-            > .github/badges/tests.json
+          echo "## Workflow Test Results" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Matrix | Run | Passed | Failed |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|---|---|---|---|" >> "$GITHUB_STEP_SUMMARY"
 
-          # Create coverage badge (placeholder)
-          echo '{"schemaVersion":1,"label":"coverage","message":"90%","color":"success"}' \
-            > .github/badges/coverage.json
+          files=$(find results -name 'test-results.txt' 2>/dev/null | sort || true)
+          if [ -z "$files" ]; then
+            echo "::error::No test-results.txt in any artifact - nothing to report."
+            exit 1
+          fi
 
-      - name: Commit badges
-        run: |
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
-          git add .github/badges/ || true
-          git commit -m "Update test badges [skip ci]" || true
-          git push || true
+          total=0
+          failed=0
+          for f in $files; do
+            matrix=$(basename "$(dirname "$f")")
+            run=$(grep -oP 'Total Tests Run:\s*\K[0-9]+' "$f" | head -1 || true)
+            pass=$(grep -oP 'Tests Passed:\s*\K[0-9]+' "$f" | head -1 || true)
+            fail=$(grep -oP 'Tests Failed:\s*\K[0-9]+' "$f" | head -1 || true)
+            if [ -z "${run:-}" ] || [ -z "${pass:-}" ] || [ -z "${fail:-}" ]; then
+              echo "::error::$f has no test summary block - the suite did not run."
+              exit 1
+            fi
+            echo "| $matrix | $run | $pass | $fail |" >> "$GITHUB_STEP_SUMMARY"
+            total=$run
+            failed=$((failed + fail))
+          done
+
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "Per matrix: **$total** tests. Failures across all matrices: **$failed**." >> "$GITHUB_STEP_SUMMARY"
+
+          if [ "$failed" -gt 0 ]; then
+            echo "::error::$failed workflow tests failed; do not publish a passing badge."
+            exit 1
+          fi
 
   # ============================================================
   # Deployment (only on main branch)
