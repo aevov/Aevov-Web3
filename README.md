@@ -434,7 +434,7 @@ php testing/performance-profiler.php
 ```
 
 **Test Coverage:**
-- 2,816 workflow tests, 100% passing — measured by CI (run `38150499612`) identically across all 12 PHP × WordPress matrices
+- 2,816 workflow tests, 100% passing — measured by CI (run `38150499612`) identically across all 11 PHP × WordPress matrices
 - Static analysis at PHPStan level 6, over the paths listed in `phpstan.neon` (`aevov-senton-field/` is not yet among them)
 - Code coverage is **not** currently measured: the coverage job's PHPUnit invocation ends in `|| true` and uploads an empty report, so this README publishes no coverage figure until one exists
 
